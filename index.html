@@ -406,74 +406,102 @@ Génère 3 questions de quiz sur cette leçon. Format JSON strict dans le champ 
 ` : '';
 
   const prompt = `Tu es un professeur expert en arabe irakien dialectal (dialecte de Bagdad).
-Tu dois générer la leçon numéro ${lessonNum} pour un apprenant francophone de niveau ${level}.
-
-Sujet de cette leçon : ${topicToTeach}
+Génère la leçon ${lessonNum} pour un apprenant francophone débutant, niveau ${level}.
+Sujet : ${topicToTeach}
 Leçons déjà vues : ${history || 'aucune'}
 
 ${quizInstructions}
 
-Réponds UNIQUEMENT avec un objet JSON valide, sans markdown, sans balises, sans texte avant ou après.
+CONTEXTE IMPORTANT : l'apprenant n'a PAS de clavier arabe. Il tape en translittération latine (ex: "ana", "inta", "shloonak"). Toutes les réponses attendues doivent être en translittération latine, jamais en arabe.
 
-Structure JSON obligatoire :
+RÈGLES ABSOLUES pour les exercices :
+- Les questions des QCM sont TOUJOURS en français (ex: "Que signifie هو ?")
+- Les options des QCM montrent le mot arabe + sa translittération + sa traduction française
+- Les exercices fill : la question est en français, la réponse attendue (champ "tr") est en translittération latine simple
+- JAMAIS demander à l'apprenant d'écrire en arabe
+- JAMAIS mettre du texte arabe seul sans translittération dans une question
+
+Réponds UNIQUEMENT avec un objet JSON valide, sans markdown, sans backticks, sans texte avant ou après.
+
 {
-  "title": "titre court de la leçon en français",
-  "titleAr": "titre en arabe",
+  "title": "Titre en français",
+  "titleAr": "العنوان بالعربي",
   "tag": "${level} · Leçon ${lessonNum}",
   "quiz": ${prevLesson ? `[
-    {"question": "...", "options": ["a) ...", "b) ...", "c) ...", "d) ..."], "correct": "a", "explanation": "..."},
-    {"question": "...", "options": ["a) ...", "b) ...", "c) ...", "d) ..."], "correct": "b", "explanation": "..."},
-    {"question": "...", "options": ["a) ...", "b) ...", "c) ...", "d) ..."], "correct": "c", "explanation": "..."}
+    {
+      "question": "Question en français sur la leçon précédente (ex: Que signifie [mot arabe] ?)",
+      "options": ["a) traduction française — translit", "b) traduction française — translit", "c) traduction française — translit", "d) traduction française — translit"],
+      "correct": "a",
+      "explanation": "Explication courte en français"
+    },
+    { "question": "...", "options": ["a) ...","b) ...","c) ...","d) ..."], "correct": "b", "explanation": "..." },
+    { "question": "...", "options": ["a) ...","b) ...","c) ...","d) ..."], "correct": "c", "explanation": "..." }
   ]` : 'null'},
-  "explanation": "Explication claire en français, 3-4 paragraphes. Style direct et pédagogique. Mentionne les particularités irakiennes vs arabe standard. Durée de lecture : 5-7 minutes.",
-  "phonetics": "Guide de prononciation en français courant pour les sons difficiles de cette leçon. Par exemple : le son ح se prononce comme un H très soufflé du fond de la gorge, le ع est un son guttural sans équivalent français, le خ ressemble au R allemand dans Bach. Explique uniquement les sons présents dans les mots de CETTE leçon, 3-5 lignes maximum.",
+  "explanation": "Explication pédagogique en français, 3-4 paragraphes clairs. Particularités irakiennes vs arabe standard. 5-7 min de lecture.",
+  "phonetics": "Guide de prononciation en français pour les sons difficiles de CETTE leçon uniquement. 3-5 lignes max.",
   "table": [
-    {"ar": "arabe", "tr": "translittération", "fr": "français", "example": "phrase exemple courte", "prononciation": "description courte de la prononciation en français courant, ex: o-na, ou: le a final est bref"},
-    ...8 à 10 entrées...
+    {
+      "ar": "mot en arabe",
+      "tr": "translittération latine simple",
+      "fr": "traduction française",
+      "example": "phrase exemple courte",
+      "prononciation": "comment prononcer en français courant, ex: a-NA, le h est soufflé"
+    }
   ],
-  "tip": "Une astuce ou règle mémo-technique courte et percutante",
+  "tip": "Astuce mémo-technique courte et percutante en français",
   "exercises": [
     {
       "type": "mcq",
-      "question": "Question en français",
+      "question": "Question en français — ex: Comment dit-on 'je' en irakien ?",
       "options": [
-        {"key": "a", "ar": "arabe", "tr": "translit", "fr": "français"},
-        {"key": "b", "ar": "arabe", "tr": "translit", "fr": "français"},
-        {"key": "c", "ar": "arabe", "tr": "translit", "fr": "français"},
-        {"key": "d", "ar": "arabe", "tr": "translit", "fr": "français"}
+        {"key": "a", "ar": "أنا", "tr": "ana", "fr": "je"},
+        {"key": "b", "ar": "إنتَ", "tr": "inta", "fr": "tu (masc.)"},
+        {"key": "c", "ar": "هو", "tr": "huwwa", "fr": "il"},
+        {"key": "d", "ar": "إحنا", "tr": "ihna", "fr": "nous"}
       ],
-      "correct": "b",
-      "explanation": "Explication de la bonne réponse"
+      "correct": "a",
+      "explanation": "Explication en français de pourquoi c'est correct"
     },
     {
       "type": "mcq",
-      "question": "Deuxième question",
-      "options": [...],
+      "question": "Deuxième question en français sur le sujet de la leçon",
+      "options": [
+        {"key": "a", "ar": "...", "tr": "...", "fr": "..."},
+        {"key": "b", "ar": "...", "tr": "...", "fr": "..."},
+        {"key": "c", "ar": "...", "tr": "...", "fr": "..."},
+        {"key": "d", "ar": "...", "tr": "...", "fr": "..."}
+      ],
       "correct": "c",
       "explanation": "..."
     },
     {
       "type": "fill",
-      "question": "Comment dit-on en arabe irakien : [phrase courte en français]",
-      "hint": "commence par : [début en translittération]",
-      "answer": "réponse en arabe",
-      "tr": "réponse en translittération latine — OBLIGATOIRE, c'est ce que l'utilisateur va taper",
-      "answerAlt": ["autre translittération acceptée si variante existe"],
-      "explanation": "Explication courte"
+      "question": "Écris en translittération : Comment dit-on '[phrase courte en français]' en arabe irakien ?",
+      "hint": "Commence par : [premières syllabes en translit]",
+      "answer": "mot en arabe (pour affichage)",
+      "tr": "réponse EXACTE en translittération latine que l'apprenant doit taper — ex: ana bseer",
+      "answerAlt": ["variante orthographique acceptée — ex: ana bshir"],
+      "explanation": "Explication en français"
     },
     {
       "type": "fill",
-      "question": "Comment dit-on en arabe irakien : [autre phrase en français]",
-      "hint": "commence par : [début en translittération]",
-      "answer": "réponse en arabe",
-      "tr": "réponse en translittération — OBLIGATOIRE",
+      "question": "Écris en translittération : Comment dit-on '[autre phrase en français]' en arabe irakien ?",
+      "hint": "Commence par : [premières syllabes]",
+      "answer": "mot en arabe",
+      "tr": "réponse en translittération",
       "answerAlt": [],
-      "explanation": "Explication courte"
+      "explanation": "Explication en français"
     }
   ],
   "vocab": [
-    {"ar": "mot", "tr": "translit", "fr": "français"},
-    ...8 mots...
+    {"ar": "mot arabe", "tr": "translittération", "fr": "traduction française"},
+    {"ar": "...", "tr": "...", "fr": "..."},
+    {"ar": "...", "tr": "...", "fr": "..."},
+    {"ar": "...", "tr": "...", "fr": "..."},
+    {"ar": "...", "tr": "...", "fr": "..."},
+    {"ar": "...", "tr": "...", "fr": "..."},
+    {"ar": "...", "tr": "...", "fr": "..."},
+    {"ar": "...", "tr": "...", "fr": "..."}
   ]
 }`;
 
@@ -1175,12 +1203,12 @@ function srsOnNewLesson(lesson){
 // ============================================================
 
 const DIALOGUE_SCENARIOS = [
-  { id:'taxi',    emoji:'🚕', label:'Dans un taxi',         context:'Tu prends un taxi à Bagdad. Le chauffeur te demande où tu vas et engage la conversation.' },
-  { id:'marche',  emoji:'🛒', label:'Au marché',            context:'Tu fais des courses dans un souk à Bagdad. Le vendeur t'accueille et propose ses produits.' },
-  { id:'cafe',    emoji:'☕', label:'Au café',              context:'Tu t'installes dans un café irakien. Le serveur prend ta commande et bavarde.' },
-  { id:'voisin',  emoji:'👋', label:'Rencontrer un voisin', context:'Tu croises ton voisin irakien dans la rue. Il te demande comment tu vas et parle de sa journée.' },
-  { id:'telephone', emoji:'📱', label:'Coup de téléphone',  context:'Tu appelles un ami irakien pour convenir d'un rendez-vous.' },
-  { id:'libre',   emoji:'🎲', label:'Situation libre',      context:'Claude choisit une situation quotidienne adaptée à ton niveau.' },
+  { id:"taxi",      emoji:"🚕", label:"Dans un taxi",          context:"Tu prends un taxi à Bagdad. Le chauffeur te demande où tu vas et engage la conversation." },
+  { id:"marche",    emoji:"🛒", label:"Au marché",             context:"Tu fais des courses dans un souk à Bagdad. Le vendeur t'accueille et propose ses produits." },
+  { id:"cafe",      emoji:"☕", label:"Au café",               context:"Tu t'installes dans un café irakien. Le serveur prend ta commande et bavarde." },
+  { id:"voisin",    emoji:"👋", label:"Rencontrer un voisin",  context:"Tu croises ton voisin irakien dans la rue. Il te demande comment tu vas." },
+  { id:"telephone", emoji:"📱", label:"Coup de téléphone",     context:"Tu appelles un ami irakien pour fixer un rendez-vous." },
+  { id:"libre",     emoji:"🎲", label:"Situation libre",       context:"Claude choisit une situation quotidienne adaptée à ton niveau." },
 ];
 
 function renderDialogueView(){
