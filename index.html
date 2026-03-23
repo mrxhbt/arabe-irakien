@@ -201,6 +201,9 @@ main{max-width:700px;margin:0 auto;padding:24px 16px 100px}
   <button class="bnav-btn" id="bnav-dico" onclick="showView('dico')">
     <span class="bnav-icon">🗂️</span>Dico
   </button>
+  <button class="bnav-btn" id="bnav-archives" onclick="showView('archives')">
+    <span class="bnav-icon">📜</span>Archives
+  </button>
   <button class="bnav-btn" id="bnav-settings" onclick="showView('settings')">
     <span class="bnav-icon">⚙️</span>Réglages
   </button>
@@ -227,6 +230,7 @@ let STATE = {
   srsSessionDone: false,
   dialogueHistory: [],
   dialogueScenario: null,
+  archiveView: null,
 };
 
 const TOTAL_LESSONS_A1 = 40;
@@ -525,7 +529,7 @@ Structure JSON obligatoire :
     // Save
     STATE.currentLesson = lesson;
     STATE.lastLessonDate = new Date().toDateString();
-    STATE.history.push({ day: STATE.dayNumber, title: lesson.title, vocab: lesson.vocab });
+    STATE.history.push({ day: STATE.dayNumber, title: lesson.title, titleAr: lesson.titleAr||'', tag: lesson.tag||'', explanation: lesson.explanation||'', phonetics: lesson.phonetics||'', tip: lesson.tip||'', table: lesson.table||[], vocab: lesson.vocab||[] });
     STATE.totalDays = STATE.history.length;
     STATE.dayNumber++;
     STATE.exerciseScores = {};
@@ -584,6 +588,7 @@ function showView(view){
   else if(view==='srs') renderSRSView();
   else if(view==='dialogue') renderDialogueView();
   else if(view==='dico') renderDicoView();
+  else if(view==='archives') renderArchivesView();
   else if(view==='settings') renderSettingsView();
 }
 
@@ -864,7 +869,7 @@ function submitQuiz(){
   const fb = document.getElementById('quiz-feedback');
   const pct = Math.round((score/L.quiz.length)*100);
   fb.className = score === L.quiz.length ? 'feedback ok' : 'feedback ko';
-  fb.textContent = `${score}/${L.quiz.length} — ${pct >= 67 ? '✓ Bien joué !' : '✗ À revoir — consulte la leçon d\'hier.'}`;
+  fb.textContent = score + '/' + L.quiz.length + ' — ' + (pct >= 67 ? 'Bien joue !' : 'A revoir — consulte la lecon d hier.');
 }
 
 // ============================================================
@@ -1261,6 +1266,146 @@ async function requestDialogueCorrection(){
 }
 function endDialogue(){
   STATE.dialogueScenario=null;STATE.dialogueHistory=[];saveState();renderDialogueView();
+}
+
+// ============================================================
+// ARCHIVES VIEW — relire les anciennes lecons
+// ============================================================
+function renderArchivesView(){
+  const history = STATE.history || [];
+  if(history.length === 0){
+    document.getElementById('main-content').innerHTML = `
+    <div class="lesson-card">
+      <div class="lesson-header">
+        <div class="lesson-tag">Archives</div>
+        <div class="lesson-title">Lecons terminees</div>
+      </div>
+      <div style="padding:40px;text-align:center;color:var(--text-dim)">
+        Aucune lecon terminee pour l'instant. Commence ta premiere lecon !
+      </div>
+    </div>`;
+    return;
+  }
+
+  // If viewing a specific lesson
+  if(STATE.archiveView !== undefined && STATE.archiveView !== null){
+    renderArchiveLessonDetail(STATE.archiveView);
+    return;
+  }
+
+  // List view
+  document.getElementById('main-content').innerHTML = `
+  <div class="lesson-card">
+    <div class="lesson-header">
+      <div class="lesson-tag">Archives · ${history.length} lecon${history.length>1?'s':''}</div>
+      <div class="lesson-title">Lecons terminees</div>
+      <div class="lesson-sub">Appuie sur une lecon pour la relire</div>
+    </div>
+    <div style="padding:14px 16px;display:flex;flex-direction:column;gap:8px">
+      ${[...history].reverse().map((h, ri) => {
+        const i = history.length - 1 - ri;
+        return `
+        <div onclick="openArchiveLesson(${i})"
+          style="display:flex;align-items:center;gap:14px;background:var(--surface2);border:2px solid var(--border);border-radius:12px;padding:14px 16px;cursor:pointer;transition:border .15s"
+          onmouseover="this.style.borderColor='var(--orange)'" onmouseout="this.style.borderColor='var(--border)'">
+          <div style="font-family:var(--font-mono);font-size:11px;color:var(--orange);background:rgba(224,92,0,.08);border:1px solid rgba(224,92,0,.2);border-radius:8px;padding:4px 10px;white-space:nowrap">
+            J${h.day}
+          </div>
+          <div style="flex:1">
+            <div style="font-size:14px;font-weight:600;color:var(--sand)">${h.title}</div>
+            ${h.titleAr ? `<div style="font-family:var(--font-arabic);font-size:16px;color:var(--orange);direction:rtl;margin-top:2px">${h.titleAr}</div>` : ''}
+          </div>
+          <div style="font-size:18px;color:var(--text-dim)">›</div>
+        </div>`;
+      }).join('')}
+    </div>
+  </div>`;
+}
+
+function openArchiveLesson(idx){
+  STATE.archiveView = idx;
+  renderArchivesView();
+}
+
+function renderArchiveLessonDetail(idx){
+  const h = STATE.history[idx];
+  if(!h){ STATE.archiveView = null; renderArchivesView(); return; }
+
+  const tableHTML = h.table && h.table.length ? `
+  <div style="margin-top:16px;overflow-x:auto">
+  <table class="grammar-table">
+    <thead><tr>
+      <th style="text-align:right">Arabe</th>
+      <th>Translit.</th>
+      <th>Francais</th>
+    </tr></thead>
+    <tbody>
+      ${h.table.map(r=>`<tr>
+        <td style="font-family:var(--font-arabic);font-size:18px;color:var(--orange);direction:rtl;text-align:right;padding:10px 12px">${r.ar||''}</td>
+        <td style="font-family:var(--font-mono);font-size:11px;color:var(--sand-dim);font-style:italic;padding:10px 12px">${r.tr||''}</td>
+        <td style="font-size:12px;color:var(--text);padding:10px 12px">${r.fr||''}</td>
+      </tr>`).join('')}
+    </tbody>
+  </table>
+  </div>` : '';
+
+  const vocabHTML = h.vocab && h.vocab.length ? `
+  <div style="margin-top:8px;display:flex;flex-direction:column;gap:4px">
+    ${h.vocab.map(v=>`
+    <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--surface2);border-radius:8px">
+      <span style="font-family:var(--font-arabic);font-size:18px;color:var(--orange);min-width:50px;text-align:right;direction:rtl">${v.ar}</span>
+      <span style="font-family:var(--font-mono);font-size:11px;color:var(--sand-dim);min-width:70px">${v.tr}</span>
+      <span style="font-size:12px;color:var(--text)">${v.fr}</span>
+    </div>`).join('')}
+  </div>` : '';
+
+  const formatText = t => (t||'')
+    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
+    .split('\n\n').join('</p><p style="margin-top:10px">')
+    .replace(/^/,'<p>').replace(/$/,'</p>');
+
+  document.getElementById('main-content').innerHTML = `
+  <div class="lesson-card">
+    <div class="lesson-header">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <button onclick="STATE.archiveView=null;renderArchivesView()"
+          style="background:none;border:none;cursor:pointer;font-family:var(--font-mono);font-size:11px;color:var(--text-dim);padding:4px 0">← Retour</button>
+        <span style="font-family:var(--font-mono);font-size:10px;color:var(--orange);letter-spacing:1px">${h.tag||'Lecon J'+h.day}</span>
+      </div>
+      <div style="font-size:21px;font-weight:600;color:var(--sand)">${h.title}</div>
+      ${h.titleAr ? `<div style="font-family:var(--font-arabic);font-size:24px;color:var(--orange);direction:rtl;text-align:right;margin-top:6px">${h.titleAr}</div>` : ''}
+    </div>
+
+    ${h.explanation ? `
+    <div style="padding:18px 20px;border-bottom:2px solid var(--border)">
+      <div style="font-family:var(--font-mono);font-size:9px;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px">Explication</div>
+      <div style="font-size:13px;line-height:1.8;color:var(--sand-dim)">${formatText(h.explanation)}</div>
+    </div>` : ''}
+
+    ${h.phonetics ? `
+    <div style="padding:16px 20px;border-bottom:2px solid var(--border)">
+      <div style="font-family:var(--font-mono);font-size:9px;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px">Prononciation</div>
+      <div style="background:rgba(212,32,96,.05);border-left:3px solid var(--pink);border-radius:0 8px 8px 0;padding:10px 14px;font-size:13px;line-height:1.7;color:var(--sand-dim)">🗣️ ${h.phonetics}</div>
+    </div>` : ''}
+
+    ${h.table && h.table.length ? `
+    <div style="padding:16px 20px;border-bottom:2px solid var(--border)">
+      <div style="font-family:var(--font-mono);font-size:9px;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px">Tableau</div>
+      ${tableHTML}
+    </div>` : ''}
+
+    ${h.tip ? `
+    <div style="padding:16px 20px;border-bottom:2px solid var(--border)">
+      <div style="background:rgba(224,92,0,.06);border-left:3px solid var(--orange);border-radius:0 8px 8px 0;padding:10px 14px;font-size:13px;line-height:1.7;color:var(--sand-dim)">💡 <strong style="color:var(--sand)">Astuce :</strong> ${h.tip}</div>
+    </div>` : ''}
+
+    ${h.vocab && h.vocab.length ? `
+    <div style="padding:16px 20px">
+      <div style="font-family:var(--font-mono);font-size:9px;color:var(--text-dim);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px">Vocabulaire (${h.vocab.length} mots)</div>
+      ${vocabHTML}
+    </div>` : ''}
+
+  </div>`;
 }
 
 // ============================================================
