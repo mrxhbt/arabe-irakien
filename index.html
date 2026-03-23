@@ -174,6 +174,9 @@ main{max-width:700px;margin:0 auto;padding:24px 16px 100px}
   <button class="bnav-btn" id="bnav-srs" onclick="showView('srs')">
     <span class="bnav-icon">🔁</span>Révision
   </button>
+  <button class="bnav-btn" id="bnav-dialogue" onclick="showView('dialogue')">
+    <span class="bnav-icon">💬</span>Dialogue
+  </button>
   <button class="bnav-btn" id="bnav-dico" onclick="showView('dico')">
     <span class="bnav-icon">🗂️</span>Dico
   </button>
@@ -199,6 +202,11 @@ let STATE = {
   srsQueue: [],
   srsIdx: 0,
   dicoSearch: '',
+  // SRS cross-leçons
+  srsBank: [], // [{ar, tr, fr, due: timestamp, interval: days, easeFactor, reps, lesson}]
+  // Dialogue
+  dialogueHistory: [], // [{role, content}]
+  dialogueScenario: null,
 };
 
 const TOTAL_LESSONS_A1 = 40;
@@ -446,19 +454,21 @@ Structure JSON obligatoire :
     },
     {
       "type": "fill",
-      "question": "Traduisez en arabe : [phrase courte]",
-      "hint": "translittération pour aider",
+      "question": "Comment dit-on en arabe irakien : [phrase courte en français]",
+      "hint": "commence par : [début en translittération]",
       "answer": "réponse en arabe",
-      "answerAlt": ["variante acceptable si existe", ""],
-      "explanation": "Explication"
+      "tr": "réponse en translittération latine — OBLIGATOIRE, c'est ce que l'utilisateur va taper",
+      "answerAlt": ["autre translittération acceptée si variante existe"],
+      "explanation": "Explication courte"
     },
     {
       "type": "fill",
-      "question": "Traduisez en arabe : [autre phrase]",
-      "hint": "translittération",
-      "answer": "réponse",
+      "question": "Comment dit-on en arabe irakien : [autre phrase en français]",
+      "hint": "commence par : [début en translittération]",
+      "answer": "réponse en arabe",
+      "tr": "réponse en translittération — OBLIGATOIRE",
       "answerAlt": [],
-      "explanation": "Explication"
+      "explanation": "Explication courte"
     }
   ],
   "vocab": [
@@ -502,8 +512,12 @@ Structure JSON obligatoire :
     STATE.totalDays = STATE.history.length;
     STATE.dayNumber++;
     STATE.exerciseScores = {};
-    STATE.srsQueue = [...lesson.vocab].sort(() => Math.random() - .5);
+    STATE.srsQueue = [];
     STATE.srsIdx = 0;
+    STATE._srsSessionDone = false;
+    STATE.dialogueHistory = [];
+    STATE.dialogueScenario = null;
+    srsOnNewLesson(lesson);
     saveState();
     updateProgressBar();
     renderLessonView();
@@ -545,12 +559,13 @@ function renderError(msg){
 // ============================================================
 function showView(view){
   STATE.currentView = view;
-  ['lesson','vocab','srs','dico','settings'].forEach(v=>{
+  ['lesson','vocab','srs','dialogue','dico','settings'].forEach(v=>{
     document.getElementById('bnav-'+v)?.classList.toggle('active', v===view);
   });
   if(view==='lesson') renderLessonView();
   else if(view==='vocab') renderVocabView();
   else if(view==='srs') renderSRSView();
+  else if(view==='dialogue') renderDialogueView();
   else if(view==='dico') renderDicoView();
   else if(view==='settings') renderSettingsView();
 }
@@ -775,9 +790,11 @@ function renderExercisesHTML(exercises){
         <div class="mcq-options" id="mcq-${i}">
           ${ex.options.map(o=>`
           <div class="mcq-opt" onclick="checkMCQ(${i}, this, '${o.key}')">
-            <span style="font-family:var(--font-mono);font-size:11px;color:var(--text-dim)">${o.key})</span>
-            <span>${o.fr||''}</span>
-            <span class="ar-opt">${o.ar||''}</span>
+            <span style="font-family:var(--font-mono);font-size:11px;color:var(--text-dim);min-width:16px">${o.key})</span>
+            <span style="flex:1;display:flex;flex-direction:column;gap:2px">
+              <span style="font-family:var(--font-arabic);font-size:20px;color:var(--orange);direction:rtl;text-align:right">${o.ar||''}</span>
+              <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim);font-style:italic">${o.tr||''} — ${o.fr||''}</span>
+            </span>
           </div>`).join('')}
         </div>
         <div class="feedback" id="fb-${i}"></div>
@@ -789,7 +806,12 @@ function renderExercisesHTML(exercises){
         <div class="ex-question">${ex.question}</div>
         ${ex.hint ? `<div style="font-family:var(--font-mono);font-size:11px;color:var(--text-dim);margin-bottom:10px;font-style:italic">Aide : ${ex.hint}</div>` : ''}
         <div class="text-input-wrap">
-          <input class="arab-input" type="text" id="fill-${i}" placeholder="اكتب هنا..." onkeydown="if(event.key==='Enter')checkFill(${i})">
+          <input type="text" id="fill-${i}"
+            placeholder="Translittération : ana, inta, shloonak..."
+            style="flex:1;background:var(--surface2);border:2px solid var(--border);color:var(--text);font-family:var(--font-mono);font-size:14px;padding:10px 13px;border-radius:10px;outline:none;direction:ltr;transition:border .15s;"
+            onfocus="this.style.borderColor='var(--orange)'"
+            onblur="this.style.borderColor='var(--border)'"
+            onkeydown="if(event.key==='Enter')checkFill(${i})">
           <button class="btn btn-sm" onclick="checkFill(${i})">OK</button>
         </div>
         <div class="feedback" id="fb-${i}"></div>
@@ -868,24 +890,43 @@ function checkMCQ(i, el, choice){
   saveState();
 }
 
+function normalize(s){
+  // normalise pour comparaison souple : minuscules, sans accents diacritiques de translit, sans espaces doubles
+  return (s||'').toLowerCase().trim()
+    .replace(/ā/g,'a').replace(/ī/g,'i').replace(/ū/g,'u')
+    .replace(/ḥ/g,'h').replace(/ḍ/g,'d').replace(/ṭ/g,'t').replace(/ẓ/g,'z')
+    .replace(/ġ/g,'gh').replace(/ḫ/g,'kh').replace(/š/g,'sh')
+    .replace(/'/g,'').replace(/'/g,'').replace(/ʾ/g,'').replace(/ʿ/g,'')
+    .replace(/\s+/g,' ');
+}
+
 function checkFill(i){
   const L = STATE.currentLesson;
   const ex = L.exercises[i];
   const inp = document.getElementById('fill-'+i);
   const val = inp.value.trim();
   const fb = document.getElementById('fb-'+i);
-  const accepted = [ex.answer, ...(ex.answerAlt||[])].filter(Boolean);
-  if(accepted.includes(val)){
-    inp.classList.add('correct');
+  // Accepted: arabic answer, transliteration (tr), alternatives, normalized variants
+  const accepted = [ex.answer, ex.tr||'', ...(ex.answerAlt||[])].filter(Boolean);
+  const normVal = normalize(val);
+  const match = accepted.some(a => a === val || normalize(a) === normVal);
+  if(match){
+    inp.style.borderColor = 'var(--green)';
+    inp.style.background = 'rgba(26,110,60,.06)';
     fb.className = 'feedback ok';
-    fb.textContent = '✓ ' + (ex.explanation || 'Parfait !');
+    fb.textContent = '✓ ' + (ex.explanation || 'Parfait !') + (ex.tr ? ` (${ex.tr})` : '');
     STATE.exerciseScores[i] = 1;
   } else {
-    inp.classList.add('wrong');
+    inp.style.borderColor = 'var(--red)';
+    inp.style.background = 'rgba(192,57,43,.06)';
     fb.className = 'feedback ko';
-    fb.textContent = `✗ Réponse : ${ex.answer} — ${ex.explanation||''}`;
+    fb.textContent = `✗ Réponse attendue : ${ex.tr||''} (${ex.answer}) — ${ex.explanation||''}`;
     STATE.exerciseScores[i] = 0;
-    setTimeout(()=>{ inp.classList.remove('wrong'); inp.value=''; }, 1500);
+    setTimeout(()=>{
+      inp.style.borderColor = 'var(--border)';
+      inp.style.background = 'var(--surface2)';
+      inp.value='';
+    }, 2000);
   }
   saveState();
 }
@@ -950,65 +991,145 @@ function renderVocabView(){
 }
 
 // ============================================================
+// SRS BANK — cross-leçons (algorithme SM-2 simplifié)
+// ============================================================
+function srsAddVocab(vocabArr, lessonTitle){
+  const now = Date.now();
+  const existing = new Set(STATE.srsBank.map(w => w.ar));
+  vocabArr.forEach(v => {
+    if(!existing.has(v.ar)){
+      STATE.srsBank.push({
+        ar: v.ar, tr: v.tr, fr: v.fr,
+        lesson: lessonTitle,
+        due: now,           // due immédiatement
+        interval: 1,        // jours avant prochaine révision
+        easeFactor: 2.5,    // facteur de facilité SM-2
+        reps: 0,
+      });
+    }
+  });
+  saveState();
+}
+
+function srsGetDueCards(){
+  const now = Date.now();
+  return STATE.srsBank
+    .filter(w => w.due <= now)
+    .sort((a,b) => a.due - b.due);
+}
+
+function srsRate(word, rating){ // rating: 'hard'=1, 'ok'=3, 'easy'=5
+  const scores = {hard:1, ok:3, easy:5};
+  const q = scores[rating];
+  const w = STATE.srsBank.find(x => x.ar === word.ar);
+  if(!w) return;
+  if(q < 3){
+    w.reps = 0;
+    w.interval = 1;
+  } else {
+    w.easeFactor = Math.max(1.3, w.easeFactor + 0.1 - (5-q)*(0.08+(5-q)*0.02));
+    if(w.reps === 0) w.interval = 1;
+    else if(w.reps === 1) w.interval = 6;
+    else w.interval = Math.round(w.interval * w.easeFactor);
+    w.reps++;
+  }
+  w.due = Date.now() + w.interval * 86400000;
+  saveState();
+}
+
+// ============================================================
 // SRS VIEW
 // ============================================================
 function renderSRSView(){
-  const L = STATE.currentLesson;
-  if(!L || !L.vocab){ document.getElementById('main-content').innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-dim)">Aucun vocabulaire disponible.</div>'; return; }
+  // Ajouter vocab leçon courante si pas encore dans la banque
+  if(STATE.currentLesson?.vocab){
+    srsAddVocab(STATE.currentLesson.vocab, STATE.currentLesson.title);
+  }
 
-  if(!STATE.srsQueue || STATE.srsQueue.length === 0){
-    STATE.srsQueue = [...L.vocab].sort(()=>Math.random()-.5);
+  const due = srsGetDueCards();
+  const total = STATE.srsBank.length;
+  const dueCount = due.length;
+
+  // Préparer queue de révision
+  if(!STATE.srsQueue || STATE.srsQueue.length === 0 || STATE._srsSessionDone){
+    STATE.srsQueue = due.slice(0, 20); // max 20 cartes par session
     STATE.srsIdx = 0;
+    STATE._srsSessionDone = false;
     saveState();
   }
 
   document.getElementById('main-content').innerHTML = `
   <div class="lesson-card">
     <div class="lesson-header">
-      <div class="lesson-tag">Révision espacée</div>
+      <div class="lesson-tag">Révision espacée · toutes leçons</div>
       <div class="lesson-title">Flashcards</div>
-      <div class="lesson-sub">Mémorise · évalue-toi · repasse les difficiles</div>
+      <div class="lesson-sub">${dueCount} carte${dueCount>1?'s':''} à réviser · ${total} mot${total>1?'s':''} au total</div>
+    </div>
+    <div style="padding:12px 20px;border-bottom:2px solid var(--border);display:flex;gap:10px;flex-wrap:wrap">
+      <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim)">
+        🟠 À réviser aujourd'hui : <strong style="color:var(--orange)">${dueCount}</strong>
+      </span>
+      <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim)">
+        📚 Banque totale : <strong style="color:var(--orange)">${total}</strong>
+      </span>
     </div>
     <div class="section">
+      ${dueCount === 0 ? `
+        <div class="complete-wrap">
+          <div class="complete-icon">✅</div>
+          <div class="complete-title">Tout à jour !</div>
+          <div class="complete-sub">Aucune carte à réviser maintenant. Reviens demain.</div>
+        </div>` : `
       <div class="srs-card" id="srs-card">
+        <div style="font-family:var(--font-mono);font-size:9px;color:var(--text-dim);margin-bottom:8px" id="srs-lesson-tag">—</div>
         <div class="srs-ar" id="srs-ar">—</div>
         <div class="srs-q">Que signifie ce mot ?</div>
         <div class="srs-answer" id="srs-answer">
-          <div id="srs-fr">—</div>
+          <div id="srs-fr" style="font-size:16px;font-weight:600">—</div>
           <div class="srs-tr" id="srs-tr">—</div>
         </div>
         <button class="btn btn-sm" id="srs-reveal" onclick="revealSRS()">Révéler</button>
         <div class="srs-btns" id="srs-btns" style="display:none">
-          <button class="btn btn-sm btn-red" onclick="rateSRS('hard')">Difficile</button>
-          <button class="btn btn-sm btn-orange" onclick="rateSRS('ok')">À revoir</button>
-          <button class="btn btn-sm btn-green" onclick="rateSRS('easy')">Facile !</button>
+          <button class="btn btn-sm btn-red" onclick="rateSRS('hard')">😰 Difficile<br><span style="font-size:9px">demain</span></button>
+          <button class="btn btn-sm btn-orange" onclick="rateSRS('ok')">🤔 À revoir<br><span style="font-size:9px">+3j</span></button>
+          <button class="btn btn-sm btn-green" onclick="rateSRS('easy')">😊 Facile !<br><span style="font-size:9px">+${Math.round((STATE.srsQueue[STATE.srsIdx]?.interval||1)*2.5)}j</span></button>
         </div>
         <div class="srs-counter" id="srs-counter">—</div>
       </div>
       <div id="srs-done" style="display:none" class="complete-wrap">
         <div class="complete-icon">🌟</div>
-        <div class="complete-title">Révision terminée !</div>
-        <div class="complete-sub" style="font-family:var(--font-arabic);font-size:20px;color:var(--gold)">أحسنت — Bravo !</div>
+        <div class="complete-title">Session terminée !</div>
+        <div class="complete-sub" style="font-family:var(--font-arabic);font-size:20px;color:var(--orange)">أحسنت — Bravo !</div>
+        <div style="margin-top:8px;font-size:12px;color:var(--text-dim);font-family:var(--font-mono)" id="srs-next-info"></div>
         <div style="margin-top:20px">
-          <button class="btn btn-sm" onclick="restartSRS()">↺ Recommencer</button>
+          <button class="btn btn-sm" onclick="restartSRS()">↺ Refaire</button>
         </div>
-      </div>
+      </div>`}
     </div>
   </div>`;
-  showSRSCard();
+
+  if(dueCount > 0) showSRSCard();
 }
 
 function showSRSCard(){
   const q = STATE.srsQueue;
   if(STATE.srsIdx >= q.length){ endSRS(); return; }
   const w = q[STATE.srsIdx];
-  document.getElementById('srs-ar').textContent = w.ar;
-  document.getElementById('srs-fr').textContent = w.fr;
-  document.getElementById('srs-tr').textContent = w.tr;
-  document.getElementById('srs-answer').classList.remove('show');
-  document.getElementById('srs-reveal').style.display = '';
-  document.getElementById('srs-btns').style.display = 'none';
-  document.getElementById('srs-counter').textContent = `Carte ${STATE.srsIdx+1} / ${q.length}`;
+  const ltag = document.getElementById('srs-lesson-tag');
+  const ar = document.getElementById('srs-ar');
+  const fr = document.getElementById('srs-fr');
+  const tr = document.getElementById('srs-tr');
+  const counter = document.getElementById('srs-counter');
+  if(ltag) ltag.textContent = w.lesson || '';
+  if(ar) ar.textContent = w.ar;
+  if(fr) fr.textContent = w.fr;
+  if(tr) tr.textContent = w.tr;
+  document.getElementById('srs-answer')?.classList.remove('show');
+  const rev = document.getElementById('srs-reveal');
+  const btns = document.getElementById('srs-btns');
+  if(rev) rev.style.display = '';
+  if(btns) btns.style.display = 'none';
+  if(counter) counter.textContent = `Carte ${STATE.srsIdx+1} / ${q.length}`;
 }
 
 function revealSRS(){
@@ -1017,24 +1138,300 @@ function revealSRS(){
   document.getElementById('srs-btns').style.display = 'flex';
 }
 
-function rateSRS(level){
-  if(level === 'hard') STATE.srsQueue.push(STATE.srsQueue[STATE.srsIdx]);
+function rateSRS(rating){
+  const w = STATE.srsQueue[STATE.srsIdx];
+  srsRate(w, rating);
   STATE.srsIdx++;
   saveState();
   showSRSCard();
 }
 
 function restartSRS(){
-  const L = STATE.currentLesson;
-  STATE.srsQueue = [...L.vocab].sort(()=>Math.random()-.5);
-  STATE.srsIdx = 0;
+  STATE.srsQueue = [];
+  STATE._srsSessionDone = false;
   saveState();
   renderSRSView();
 }
 
 function endSRS(){
-  document.getElementById('srs-card').style.display = 'none';
-  document.getElementById('srs-done').style.display = 'block';
+  STATE._srsSessionDone = true;
+  saveState();
+  const card = document.getElementById('srs-card');
+  const done = document.getElementById('srs-done');
+  if(card) card.style.display = 'none';
+  if(done) done.style.display = 'block';
+  const next = srsGetDueCards().length;
+  const info = document.getElementById('srs-next-info');
+  if(info) info.textContent = next > 0 ? `${next} carte${next>1?'s':''} encore à réviser` : 'Reviens demain pour la prochaine session.';
+}
+
+// Intégrer vocab dans la banque à chaque nouvelle leçon générée
+function srsOnNewLesson(lesson){
+  srsAddVocab(lesson.vocab || [], lesson.title || '');
+}
+
+// ============================================================
+// DIALOGUE VIEW — conversation libre avec Claude
+// ============================================================
+
+const DIALOGUE_SCENARIOS = [
+  { id:'taxi',    emoji:'🚕', label:'Dans un taxi',         context:'Tu prends un taxi à Bagdad. Le chauffeur te demande où tu vas et engage la conversation.' },
+  { id:'marche',  emoji:'🛒', label:'Au marché',            context:'Tu fais des courses dans un souk à Bagdad. Le vendeur t'accueille et propose ses produits.' },
+  { id:'cafe',    emoji:'☕', label:'Au café',              context:'Tu t'installes dans un café irakien. Le serveur prend ta commande et bavarde.' },
+  { id:'voisin',  emoji:'👋', label:'Rencontrer un voisin', context:'Tu croises ton voisin irakien dans la rue. Il te demande comment tu vas et parle de sa journée.' },
+  { id:'telephone', emoji:'📱', label:'Coup de téléphone',  context:'Tu appelles un ami irakien pour convenir d'un rendez-vous.' },
+  { id:'libre',   emoji:'🎲', label:'Situation libre',      context:'Claude choisit une situation quotidienne adaptée à ton niveau.' },
+];
+
+function renderDialogueView(){
+  if(!STATE.dialogueScenario){
+    renderDialogueScenarioPicker();
+  } else {
+    renderDialogueChat();
+  }
+}
+
+function renderDialogueScenarioPicker(){
+  document.getElementById('main-content').innerHTML = `
+  <div class="lesson-card">
+    <div class="lesson-header">
+      <div class="lesson-tag">Dialogue · oral simulé</div>
+      <div class="lesson-title">Choisis une situation</div>
+      <div class="lesson-sub">Claude joue le rôle d'un locuteur natif irakien · réponds en arabe</div>
+    </div>
+    <div class="section">
+      <div style="display:flex;flex-direction:column;gap:10px">
+        ${DIALOGUE_SCENARIOS.map(s=>`
+        <div onclick="startDialogue('${s.id}')"
+          style="display:flex;align-items:center;gap:14px;background:var(--surface2);border:2px solid var(--border);border-radius:12px;padding:14px 16px;cursor:pointer;transition:all .15s"
+          onmouseover="this.style.borderColor='var(--orange)'" onmouseout="this.style.borderColor='var(--border)'">
+          <span style="font-size:24px">${s.emoji}</span>
+          <div>
+            <div style="font-size:14px;font-weight:600;color:var(--sand)">${s.label}</div>
+            <div style="font-size:11px;color:var(--text-dim);margin-top:2px">${s.context}</div>
+          </div>
+        </div>`).join('')}
+      </div>
+    </div>
+  </div>`;
+}
+
+async function startDialogue(scenarioId){
+  const scenario = DIALOGUE_SCENARIOS.find(s=>s.id===scenarioId);
+  STATE.dialogueScenario = scenario;
+  STATE.dialogueHistory = [];
+  saveState();
+  renderDialogueChat();
+  await sendDialogueMessage(null); // premier message de Claude
+}
+
+function renderDialogueChat(){
+  const s = STATE.dialogueScenario;
+  document.getElementById('main-content').innerHTML = `
+  <div class="lesson-card">
+    <div class="lesson-header" style="display:flex;align-items:center;justify-content:space-between">
+      <div>
+        <div class="lesson-tag">Dialogue · ${s.emoji} ${s.label}</div>
+        <div class="lesson-title" style="font-size:17px">Conversation libre</div>
+        <div class="lesson-sub">Réponds en arabe · Claude te corrige à la fin</div>
+      </div>
+      <button class="btn btn-sm" onclick="endDialogue()" style="flex-shrink:0">✕ Quitter</button>
+    </div>
+    <div id="dialogue-messages" style="padding:16px 18px;display:flex;flex-direction:column;gap:12px;min-height:200px;max-height:55vh;overflow-y:auto"></div>
+    <div style="padding:14px 18px;border-top:2px solid var(--border);display:flex;gap:8px;align-items:flex-end">
+      <textarea id="dialogue-input"
+        placeholder="Écris en translittération : ana bseer, shukran..."
+        style="flex:1;background:var(--surface2);border:2px solid var(--border);color:var(--text);font-family:var(--font-mono);font-size:15px;padding:10px 13px;border-radius:10px;outline:none;direction:ltr;resize:none;min-height:48px;max-height:120px;transition:border .15s;line-height:1.5"
+        onfocus="this.style.borderColor='var(--orange)'"
+        onblur="this.style.borderColor='var(--border)'"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendUserDialogue()}"
+        rows="2"></textarea>
+      <button class="btn btn-primary btn-sm" onclick="sendUserDialogue()" style="flex-shrink:0;padding:12px 16px">→</button>
+    </div>
+    <div style="padding:4px 18px 0;font-family:var(--font-mono);font-size:9px;color:var(--text-dim)">
+      💡 Translittération acceptée — ex: ana bseer, shukran, shloonak, maku mushkila
+    </div>
+    <div style="padding:8px 18px 14px;text-align:center">
+      <button class="btn btn-sm" onclick="requestDialogueCorrection()" style="border-color:var(--pink);color:var(--pink)">🔍 Demander une correction complète</button>
+    </div>
+  </div>`;
+
+  // Render existing messages
+  STATE.dialogueHistory.forEach(m => appendDialogueMessage(m.role, m.content));
+
+  // If no messages yet, loading state
+  if(STATE.dialogueHistory.length === 0){
+    appendDialogueMessage('assistant', '...');
+  }
+}
+
+function appendDialogueMessage(role, content){
+  const container = document.getElementById('dialogue-messages');
+  if(!container) return;
+  // Remove loading dots if present
+  const dots = container.querySelector('.loading-dots');
+  if(dots) dots.remove();
+
+  const isUser = role === 'user';
+  const div = document.createElement('div');
+  div.style.cssText = `display:flex;flex-direction:column;align-items:${isUser?'flex-end':'flex-start'};gap:3px`;
+
+  const bubble = document.createElement('div');
+  bubble.style.cssText = `
+    max-width:85%;padding:10px 14px;border-radius:${isUser?'14px 14px 4px 14px':'14px 14px 14px 4px'};
+    font-family:var(--font-arabic);font-size:17px;direction:rtl;text-align:right;line-height:1.6;
+    background:${isUser?'var(--orange)':'var(--surface2)'};
+    color:${isUser?'#fff':'var(--sand)'};
+    border:${isUser?'none':'2px solid var(--border)'};
+  `;
+  bubble.textContent = content;
+
+  const label = document.createElement('div');
+  label.style.cssText = `font-family:var(--font-mono);font-size:9px;color:var(--text-dim);margin:0 4px`;
+  label.textContent = isUser ? 'Toi' : 'Locuteur irakien';
+
+  div.appendChild(label);
+  div.appendChild(bubble);
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+function appendLoadingDots(){
+  const container = document.getElementById('dialogue-messages');
+  if(!container) return;
+  const div = document.createElement('div');
+  div.className = 'loading-dots';
+  div.style.cssText = 'display:flex;align-items:center;gap:4px;padding:8px 0';
+  div.innerHTML = `
+    <div style="width:8px;height:8px;background:var(--border);border-radius:50%;animation:pulse 1s infinite"></div>
+    <div style="width:8px;height:8px;background:var(--border);border-radius:50%;animation:pulse 1s infinite .2s"></div>
+    <div style="width:8px;height:8px;background:var(--border);border-radius:50%;animation:pulse 1s infinite .4s"></div>
+    <style>@keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}</style>`;
+  container.appendChild(div);
+  container.scrollTop = container.scrollHeight;
+}
+
+async function sendUserDialogue(){
+  const inp = document.getElementById('dialogue-input');
+  if(!inp) return;
+  const text = inp.value.trim();
+  if(!text) return;
+  inp.value = '';
+  STATE.dialogueHistory.push({role:'user', content:text});
+  saveState();
+  appendDialogueMessage('user', text);
+  await sendDialogueMessage(text);
+}
+
+async function sendDialogueMessage(userMsg){
+  appendLoadingDots();
+  const s = STATE.dialogueScenario;
+  const level = STATE.level;
+  const recentVocab = STATE.history.slice(-3).flatMap(h=>h.vocab||[]).map(v=>v.ar).join('، ');
+
+  const systemPrompt = `Tu es un locuteur natif irakien (dialecte de Bagdad). Tu joues le rôle suivant : ${s.context}
+Règles absolues :
+- Réponds UNIQUEMENT en arabe dialectal irakien (pas d'arabe standard)
+- Phrases courtes, adaptées au niveau ${level}
+- Sois naturel et chaleureux, comme dans une vraie conversation
+- N'explique rien, ne traduis pas, reste dans le personnage
+- L'utilisateur écrit en translittération latine (ex: "ana bseer", "shloonak", "maku mushkila") — comprends et réponds normalement en arabe
+- Si l'utilisateur fait une erreur de grammaire ou de vocabulaire, ne la corriger PAS maintenant — continue la conversation naturellement
+- Vocabulaire connu de l'utilisateur : ${recentVocab || 'basique'}`;
+
+  const messages = [
+    ...STATE.dialogueHistory.map(m=>({role:m.role, content:m.content})),
+  ];
+  if(!userMsg){
+    messages.push({role:'user', content:'Commence la conversation selon ton rôle.'});
+  }
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':STATE.apiKey,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:300,
+        system:systemPrompt,
+        messages,
+      })
+    });
+    const data = await response.json();
+    const reply = data.content?.map(c=>c.text||'').join('') || '...';
+    STATE.dialogueHistory.push({role:'assistant', content:reply});
+    saveState();
+    appendDialogueMessage('assistant', reply);
+  } catch(e){
+    appendDialogueMessage('assistant', '(Erreur de connexion — vérifie ta clé API)');
+  }
+}
+
+async function requestDialogueCorrection(){
+  if(STATE.dialogueHistory.length < 2){
+    alert('Échange d'abord quelques messages avant de demander une correction !');
+    return;
+  }
+  appendLoadingDots();
+
+  const userMessages = STATE.dialogueHistory.filter(m=>m.role==='user').map(m=>m.content).join(' / ');
+  const prompt = `Voici les réponses en arabe irakien d'un apprenant francophone de niveau ${STATE.level} pendant un dialogue :
+"${userMessages}"
+
+Fais une correction pédagogique en français :
+1. Ce qui était correct (en arabe + traduction)
+2. Les erreurs et comment les corriger
+3. Vocabulaire ou expressions plus naturelles à utiliser
+4. Note globale sur 5 et encouragement en arabe irakien
+
+Sois précis mais bienveillant.`;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':STATE.apiKey,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:800,
+        messages:[{role:'user', content:prompt}]
+      })
+    });
+    const data = await response.json();
+    const correction = data.content?.map(c=>c.text||'').join('') || '';
+
+    // Afficher la correction dans une card séparée
+    const container = document.getElementById('dialogue-messages');
+    if(!container) return;
+    const dots = container.querySelector('.loading-dots');
+    if(dots) dots.remove();
+
+    const div = document.createElement('div');
+    div.style.cssText = 'background:rgba(212,32,96,.06);border:2px solid rgba(212,32,96,.2);border-radius:12px;padding:14px 16px;margin-top:8px';
+    div.innerHTML = `
+      <div style="font-family:var(--font-mono);font-size:10px;color:var(--pink);letter-spacing:1px;margin-bottom:8px;text-transform:uppercase">🔍 Correction</div>
+      <div style="font-size:13px;color:var(--sand);line-height:1.7;white-space:pre-wrap">${correction}</div>`;
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+  } catch(e){
+    alert('Erreur lors de la correction — vérifie ta clé API.');
+  }
+}
+
+function endDialogue(){
+  STATE.dialogueScenario = null;
+  STATE.dialogueHistory = [];
+  saveState();
+  renderDialogueView();
 }
 
 // ============================================================
