@@ -11,133 +11,157 @@
   --bg:#fff8f3;--surface:#ffffff;--surface2:#fff0e6;--border:#f5d9c8;
   --gold:#e05c00;--gold-light:#f4894a;--sand:#2a1200;--sand-dim:#7a3d10;
   --red:#c0392b;--green:#1a6e3c;--blue:#1a5fa0;--text:#2a1200;--text-dim:#b06030;
-  --pink:#d42060;--pink-light:#f0609a;--orange:#e05c00;--ocre:#b85c00;
+  --pink:#d42060;--orange:#e05c00;--ocre:#b85c00;
   --radius:14px;--font-display:"Plus Jakarta Sans",sans-serif;--font-mono:"DM Mono",monospace;--font-arabic:"Noto Naskh Arabic",serif;
 }
-body{
-  background:var(--bg);
-  background-image:
-    radial-gradient(circle at 15% 15%,rgba(224,92,0,.07) 0%,transparent 45%),
-    radial-gradient(circle at 85% 85%,rgba(212,32,96,.07) 0%,transparent 45%),
-    url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23e05c00' fill-opacity='0.03'%3E%3Cpath d='M30 0L60 30L30 60L0 30z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-  color:var(--text);font-family:var(--font-display);min-height:100vh;overflow-x:hidden
-}
-header{
-  padding:14px 18px;display:flex;align-items:center;justify-content:space-between;
-  border-bottom:2px solid var(--border);position:sticky;top:0;z-index:100;
-  background:rgba(255,248,243,.95);backdrop-filter:blur(8px);
-}
-.logo{font-size:18px;font-weight:600;color:var(--orange)}
-.logo span{color:var(--sand-dim);font-weight:400;font-size:12px;margin-left:6px}
+body{background:var(--bg);color:var(--text);font-family:var(--font-display);min-height:100vh;overflow-x:hidden}
+
+/* HEADER */
+header{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;background:var(--bg);}
+.logo{font-size:18px;font-weight:600;color:var(--gold)}
+.logo span{color:var(--sand-dim);font-weight:300;font-style:italic;font-size:12px;margin-left:6px}
 .header-right{display:flex;align-items:center;gap:10px}
-.level-badge{font-family:var(--font-mono);font-size:10px;background:var(--surface2);border:2px solid var(--border);padding:5px 11px;border-radius:20px;color:var(--orange);}
-.notif-btn{font-family:var(--font-mono);font-size:10px;background:transparent;border:2px solid var(--border);padding:5px 11px;border-radius:20px;color:var(--text-dim);cursor:pointer;transition:all .2s;}
+.level-badge{font-family:var(--font-mono);font-size:10px;background:var(--surface2);border:1px solid var(--border);padding:5px 11px;border-radius:20px;color:var(--gold);}
+.notif-btn{font-family:var(--font-mono);font-size:10px;background:transparent;border:1px solid var(--border);padding:5px 11px;border-radius:20px;color:var(--text-dim);cursor:pointer;transition:all .2s;}
 .notif-btn.active{border-color:var(--green);color:var(--green)}
-.notif-btn:hover{border-color:var(--orange);color:var(--orange)}
-.progress-bar-wrap{padding:10px 18px;border-bottom:2px solid var(--border);background:rgba(255,248,243,.95)}
+.notif-btn:hover{border-color:var(--gold);color:var(--gold)}
+
+/* PROGRESS */
+.progress-bar-wrap{padding:10px 18px;border-bottom:1px solid var(--border);background:var(--bg)}
 .progress-labels{display:flex;justify-content:space-between;font-size:10px;font-family:var(--font-mono);color:var(--text-dim);margin-bottom:5px}
-.progress-track{height:7px;background:var(--surface2);border-radius:4px;overflow:hidden;border:1px solid var(--border)}
-.progress-fill{height:100%;background:linear-gradient(90deg,var(--orange),var(--pink));border-radius:4px;transition:width 1s ease}
+.progress-track{height:5px;background:var(--surface2);border-radius:3px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--orange),var(--pink));border-radius:3px;transition:width 1s ease}
+
 main{max-width:700px;margin:0 auto;padding:24px 16px 100px}
+
+/* SETUP SCREEN */
 #setup-screen{text-align:center;padding:40px 20px}
-.setup-title{font-size:28px;font-weight:600;color:var(--orange);margin-bottom:8px}
-.setup-sub{font-size:14px;color:var(--text-dim);margin-bottom:32px}
-.setup-card{background:var(--surface);border:2px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:16px;text-align:left;box-shadow:0 2px 12px rgba(224,92,0,.06)}
-.setup-label{font-family:var(--font-mono);font-size:10px;color:var(--orange);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
-.setup-input{width:100%;background:var(--surface2);border:2px solid var(--border);color:var(--text);font-family:var(--font-mono);font-size:13px;padding:12px 14px;border-radius:10px;outline:none;transition:border .15s;}
-.setup-input:focus{border-color:var(--orange)}
+.setup-title{font-size:28px;font-weight:600;color:var(--gold);margin-bottom:8px}
+.setup-sub{font-size:14px;color:var(--text-dim);font-style:italic;margin-bottom:32px}
+.setup-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px;margin-bottom:16px;text-align:left}
+.setup-label{font-family:var(--font-mono);font-size:10px;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.setup-input{width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:var(--font-mono);font-size:13px;padding:12px 14px;border-radius:8px;outline:none;transition:border .15s;}
+.setup-input:focus{border-color:var(--gold)}
 .setup-hint{font-size:11px;color:var(--text-dim);margin-top:6px;font-style:italic}
-.setup-warning{background:rgba(192,57,43,.06);border:2px solid rgba(192,57,43,.2);border-radius:10px;padding:12px 16px;font-size:12px;color:#b02010;margin-top:12px;line-height:1.6}
-.lesson-card{background:var(--surface);border:2px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:20px;box-shadow:0 2px 16px rgba(224,92,0,.06)}
-.lesson-header{padding:20px 22px 16px;border-bottom:2px solid var(--border);background:linear-gradient(135deg,rgba(224,92,0,.04),rgba(212,32,96,.04))}
-.lesson-tag{font-family:var(--font-mono);font-size:9px;color:var(--orange);letter-spacing:1.5px;margin-bottom:5px;text-transform:uppercase;font-weight:500}
+.setup-warning{background:rgba(192,57,43,.1);border:1px solid rgba(192,57,43,.3);border-radius:8px;padding:12px 16px;font-size:12px;color:#e74c3c;margin-top:12px;line-height:1.6}
+
+/* LESSON CARD */
+.lesson-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:20px}
+.lesson-header{padding:20px 22px 16px;border-bottom:1px solid var(--border)}
+.lesson-tag{font-family:var(--font-mono);font-size:9px;color:var(--gold);letter-spacing:1px;margin-bottom:5px;text-transform:uppercase}
 .lesson-title{font-size:21px;font-weight:600;color:var(--sand);line-height:1.2}
-.lesson-sub{font-size:12px;color:var(--text-dim);margin-top:4px}
-.lesson-ar{font-family:var(--font-arabic);font-size:26px;color:var(--orange);direction:rtl;text-align:right;margin-top:8px}
-.snav{display:flex;border-bottom:2px solid var(--border)}
-.snav-btn{flex:1;padding:11px 4px;font-family:var(--font-mono);font-size:9px;background:none;border:none;color:var(--text-dim);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;letter-spacing:.5px;text-transform:uppercase;margin-bottom:-2px;}
-.snav-btn.active{color:var(--orange);border-bottom-color:var(--orange)}
+.lesson-sub{font-size:12px;color:var(--text-dim);margin-top:4px;font-style:italic}
+.lesson-ar{font-family:var(--font-arabic);font-size:26px;color:var(--gold);direction:rtl;text-align:right;margin-top:8px}
+
+/* SECTION NAV */
+.snav{display:flex;border-bottom:1px solid var(--border)}
+.snav-btn{flex:1;padding:11px 4px;font-family:var(--font-mono);font-size:9px;background:none;border:none;color:var(--text-dim);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;letter-spacing:.5px;text-transform:uppercase;margin-bottom:-1px;}
+.snav-btn.active{color:var(--gold);border-bottom-color:var(--gold)}
+
 .tab-content{display:none;animation:fadeIn .3s ease}.tab-content.active{display:block}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.section{padding:20px 22px;border-bottom:2px solid var(--border)}.section:last-child{border-bottom:none}
+
+.section{padding:20px 22px;border-bottom:1px solid var(--border)}.section:last-child{border-bottom:none}
 .section-label{font-family:var(--font-mono);font-size:9px;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;margin-bottom:16px;display:flex;align-items:center;gap:8px;}
-.section-label::after{content:"";flex:1;height:1px;background:var(--border)}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* CONTENT RENDERING */
 .lesson-content{font-size:14px;line-height:1.8;color:var(--sand-dim)}
 .lesson-content h3{font-size:15px;font-weight:600;color:var(--sand);margin:16px 0 8px}
-.lesson-content .callout{background:linear-gradient(135deg,rgba(224,92,0,.06),rgba(212,32,96,.04));border-left:3px solid var(--orange);border-radius:0 10px 10px 0;padding:12px 16px;margin:12px 0;font-size:13px;line-height:1.7;color:var(--sand-dim);}
+.lesson-content .callout{background:var(--surface2);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;padding:12px 16px;margin:12px 0;font-size:13px;line-height:1.7;color:var(--sand-dim);}
 .lesson-content strong{color:var(--sand)}
-.lesson-content .ar-text{font-family:var(--font-arabic);font-size:20px;color:var(--orange);direction:rtl;text-align:right;display:block;margin:8px 0}
+.lesson-content .ar-text{font-family:var(--font-arabic);font-size:20px;color:var(--gold);direction:rtl;text-align:right;display:block;margin:8px 0}
 .lesson-content .translit{font-family:var(--font-mono);font-size:12px;color:var(--sand-dim);font-style:italic}
+
+/* TABLE */
 .grammar-table{width:100%;border-collapse:collapse;margin:12px 0;font-size:13px}
-.grammar-table th{font-family:var(--font-mono);font-size:9px;letter-spacing:1px;color:var(--text-dim);text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:2px solid var(--border);background:var(--surface2);}
+.grammar-table th{font-family:var(--font-mono);font-size:9px;letter-spacing:1px;color:var(--text-dim);text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:1px solid var(--border);}
 .grammar-table td{padding:10px 12px;border-bottom:1px solid var(--border)}
 .grammar-table tr:last-child td{border-bottom:none}
-.grammar-table tr:hover td{background:rgba(224,92,0,.04)}
-.ar-cell{font-family:var(--font-arabic);font-size:19px;color:var(--orange);direction:rtl;text-align:right}
+.grammar-table tr:hover td{background:var(--surface2)}
+.ar-cell{font-family:var(--font-arabic);font-size:19px;color:var(--gold);direction:rtl;text-align:right}
 .tr-cell{font-family:var(--font-mono);font-size:11px;color:var(--sand-dim);font-style:italic}
+
+/* EXERCISES */
 .exercise-block{margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid var(--border)}.exercise-block:last-of-type{border-bottom:none}
-.ex-label{font-family:var(--font-mono);font-size:9px;color:var(--pink);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;display:block;font-weight:500}
+.ex-label{font-family:var(--font-mono);font-size:9px;color:var(--gold);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;display:block}
 .ex-question{font-size:14px;color:var(--sand);margin-bottom:12px;line-height:1.6}
 .mcq-options{display:flex;flex-direction:column;gap:7px}
-.mcq-opt{display:flex;align-items:center;gap:10px;background:var(--surface2);border:2px solid var(--border);border-radius:10px;padding:11px 14px;cursor:pointer;font-size:13px;transition:all .15s;user-select:none;}
+.mcq-opt{display:flex;align-items:center;gap:10px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:11px 14px;cursor:pointer;font-size:13px;transition:all .15s;user-select:none;}
 .mcq-opt:active{transform:scale(.98)}
-.mcq-opt:hover{border-color:var(--orange);background:rgba(224,92,0,.04)}
-.mcq-opt.correct{border-color:var(--green)!important;background:rgba(26,110,60,.08)!important;color:var(--green)!important}
-.mcq-opt.wrong{border-color:var(--red)!important;background:rgba(192,57,43,.06)!important;color:var(--red)!important}
-.mcq-opt .ar-opt{font-family:var(--font-arabic);font-size:17px;margin-left:auto;color:var(--orange)}
+.mcq-opt.correct{border-color:var(--green)!important;background:rgba(39,174,96,.1)!important;color:var(--green)!important}
+.mcq-opt.wrong{border-color:var(--red)!important;background:rgba(192,57,43,.08)!important;color:var(--red)!important}
+.mcq-opt .ar-opt{font-family:var(--font-arabic);font-size:17px;margin-left:auto;color:var(--gold)}
 .text-input-wrap{display:flex;gap:8px;align-items:flex-start}
-.arab-input{flex:1;background:var(--surface2);border:2px solid var(--border);color:var(--text);font-family:var(--font-arabic);font-size:19px;padding:10px 13px;border-radius:10px;outline:none;direction:rtl;transition:border .15s;}
-.arab-input:focus{border-color:var(--orange)}
-.arab-input.correct{border-color:var(--green)!important;background:rgba(26,110,60,.06)}
+.arab-input{flex:1;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:var(--font-arabic);font-size:19px;padding:10px 13px;border-radius:8px;outline:none;direction:rtl;transition:border .15s;}
+.arab-input:focus{border-color:var(--gold)}
+.arab-input.correct{border-color:var(--green)!important;background:rgba(39,174,96,.06)}
 .arab-input.wrong{border-color:var(--red)!important;background:rgba(192,57,43,.06)}
-.feedback{margin-top:10px;font-size:12px;padding:9px 13px;border-radius:8px;display:none;font-family:var(--font-mono);line-height:1.5}
-.feedback.ok{background:rgba(26,110,60,.08);color:var(--green);border:1px solid rgba(26,110,60,.2);display:block}
-.feedback.ko{background:rgba(192,57,43,.06);color:#c0392b;border:1px solid rgba(192,57,43,.2);display:block}
+.feedback{margin-top:10px;font-size:12px;padding:9px 13px;border-radius:6px;display:none;font-family:var(--font-mono);line-height:1.5}
+.feedback.ok{background:rgba(39,174,96,.1);color:var(--green);display:block}
+.feedback.ko{background:rgba(192,57,43,.08);color:#e74c3c;display:block}
+
+/* VOCAB */
 .vocab-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-.vocab-card{background:var(--surface2);border:2px solid var(--border);border-radius:12px;padding:14px 12px;cursor:pointer;transition:all .2s;text-align:center;}
-.vocab-card:hover{border-color:var(--orange);box-shadow:0 4px 16px rgba(224,92,0,.1);transform:translateY(-2px)}
+.vocab-card{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px 12px;cursor:pointer;transition:all .2s;text-align:center;}
 .vocab-card:active{transform:scale(.97)}
-.v-ar{font-family:var(--font-arabic);font-size:23px;color:var(--orange);direction:rtl;display:block;margin-bottom:4px}
+.v-ar{font-family:var(--font-arabic);font-size:23px;color:var(--gold);direction:rtl;display:block;margin-bottom:4px}
 .v-tr{font-family:var(--font-mono);font-size:10px;color:var(--sand-dim);font-style:italic;display:block;margin-bottom:3px}
 .v-fr{font-size:12px;color:var(--text);display:block;transition:filter .2s}
 .v-fr.blurred{filter:blur(4px)}
 .v-hint{font-family:var(--font-mono);font-size:9px;color:var(--text-dim);margin-top:5px;letter-spacing:.5px}
-.srs-card{background:linear-gradient(135deg,var(--surface2),rgba(212,32,96,.04));border:2px solid var(--border);border-radius:var(--radius);padding:32px 24px;text-align:center;min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-.srs-ar{font-family:var(--font-arabic);font-size:48px;color:var(--orange);direction:rtl;margin-bottom:12px}
-.srs-q{font-size:12px;color:var(--text-dim);margin-bottom:20px;font-family:var(--font-mono)}
-.srs-answer{font-size:15px;color:var(--sand);margin:14px 0;padding:12px 20px;background:var(--surface);border:2px solid var(--border);border-radius:10px;display:none}
+
+/* SRS */
+.srs-card{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:32px 24px;text-align:center;min-height:180px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.srs-ar{font-family:var(--font-arabic);font-size:44px;color:var(--gold);direction:rtl;margin-bottom:12px}
+.srs-q{font-size:12px;color:var(--text-dim);margin-bottom:20px}
+.srs-answer{font-size:15px;color:var(--sand);margin:14px 0;padding:10px 18px;background:var(--surface);border-radius:8px;display:none}
 .srs-answer.show{display:block}
 .srs-tr{font-family:var(--font-mono);font-size:12px;color:var(--sand-dim);font-style:italic;margin-top:4px}
 .srs-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px}
 .srs-counter{font-family:var(--font-mono);font-size:10px;color:var(--text-dim);margin-top:16px}
-.btn{font-family:var(--font-mono);font-size:11px;letter-spacing:.5px;padding:10px 20px;border-radius:10px;border:2px solid var(--orange);background:transparent;color:var(--orange);cursor:pointer;transition:all .2s;user-select:none;font-weight:500}
+
+/* BUTTONS */
+.btn{font-family:var(--font-mono);font-size:11px;letter-spacing:.5px;padding:10px 20px;border-radius:8px;border:1px solid var(--gold);background:transparent;color:var(--gold);cursor:pointer;transition:all .2s;user-select:none;}
 .btn:active{transform:scale(.97)}
-.btn:hover{background:var(--orange);color:#fff}
-.btn-primary{background:var(--orange);color:#fff}
-.btn-primary:hover{background:var(--ocre)}
+.btn:hover{background:var(--gold);color:var(--bg)}
+.btn-primary{background:var(--gold);color:var(--bg)}
+.btn-primary:hover{background:var(--gold-light)}
 .btn-sm{padding:8px 14px;font-size:10px}
 .btn-red{border-color:var(--red);color:var(--red)}.btn-red:hover{background:var(--red);color:#fff}
-.btn-orange{border-color:#d4810a;color:#d4810a}.btn-orange:hover{background:#d4810a;color:#fff}
+.btn-orange{border-color:#f39c12;color:#f39c12}.btn-orange:hover{background:#f39c12;color:#fff}
 .btn-green{border-color:var(--green);color:var(--green)}.btn-green:hover{background:var(--green);color:#fff}
-.score-wrap{display:flex;align-items:center;gap:16px;background:linear-gradient(135deg,rgba(224,92,0,.06),rgba(212,32,96,.04));border:2px solid var(--border);border-radius:12px;padding:14px 20px;margin-bottom:20px}
-.score-num{font-size:28px;font-weight:600;color:var(--orange);font-family:var(--font-mono)}
+
+/* SCORE */
+.score-wrap{display:flex;align-items:center;gap:16px;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px 20px;margin-bottom:20px}
+.score-num{font-size:28px;font-weight:600;color:var(--gold);font-family:var(--font-mono)}
 .score-lbl{font-size:10px;color:var(--text-dim);font-family:var(--font-mono);letter-spacing:.5px}
+
+/* LOADING */
 .loading-wrap{text-align:center;padding:48px 20px}
-.loading-ar{font-family:var(--font-arabic);font-size:40px;color:var(--orange);margin-bottom:12px}
-.loading-spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--orange);border-radius:50%;animation:spin 1s linear infinite;margin:16px auto}
+.loading-ar{font-family:var(--font-arabic);font-size:36px;color:var(--gold);margin-bottom:12px}
+.loading-spinner{width:32px;height:32px;border:3px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite;margin:16px auto}
 @keyframes spin{to{transform:rotate(360deg)}}
-.loading-msg{font-size:13px;color:var(--text-dim)}
+.loading-msg{font-size:13px;color:var(--text-dim);font-style:italic}
+
+/* COMPLETE */
 .complete-wrap{text-align:center;padding:40px 20px}
 .complete-icon{font-size:48px;margin-bottom:12px}
-.complete-title{font-size:24px;font-weight:600;color:var(--orange);margin-bottom:6px}
-.complete-sub{font-size:13px;color:var(--text-dim);margin-bottom:24px}
-.quiz-banner{background:linear-gradient(135deg,rgba(212,32,96,.06),rgba(224,92,0,.04));border:2px solid rgba(212,32,96,.2);border-radius:12px;padding:14px 18px;margin-bottom:20px;font-size:13px;line-height:1.6;color:var(--sand-dim);}
-.quiz-banner strong{color:var(--pink);font-size:11px;font-family:var(--font-mono);letter-spacing:.5px;display:block;margin-bottom:4px}
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:rgba(255,248,243,.95);backdrop-filter:blur(8px);border-top:2px solid var(--border);display:flex;z-index:50}
+.complete-title{font-size:24px;font-weight:600;color:var(--gold);margin-bottom:6px}
+.complete-sub{font-size:13px;color:var(--text-dim);font-style:italic;margin-bottom:24px}
+
+/* QUIZ BANNER */
+.quiz-banner{background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.3);border-radius:10px;padding:14px 18px;margin-bottom:20px;font-size:13px;line-height:1.6;color:var(--sand-dim);}
+.quiz-banner strong{color:var(--gold);font-size:12px;font-family:var(--font-mono);letter-spacing:.5px;display:block;margin-bottom:4px}
+
+/* BOTTOM NAV */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);display:flex;z-index:50}
 .bnav-btn{flex:1;padding:12px 4px 14px;font-family:var(--font-mono);font-size:9px;background:none;border:none;color:var(--text-dim);cursor:pointer;text-align:center;text-transform:uppercase;letter-spacing:.5px;transition:color .15s;}
-.bnav-btn.active{color:var(--orange)}
+.bnav-btn.active{color:var(--gold)}
 .bnav-icon{font-size:18px;display:block;margin-bottom:2px}
-.error-box{background:rgba(192,57,43,.06);border:2px solid rgba(192,57,43,.2);border-radius:12px;padding:16px 20px;font-size:13px;color:#c0392b;line-height:1.6}
+
+/* ERROR */
+.error-box{background:rgba(192,57,43,.1);border:1px solid rgba(192,57,43,.3);border-radius:10px;padding:16px 20px;font-size:13px;color:#e74c3c;line-height:1.6}
 </style>
 </head>
 <body>
@@ -174,9 +198,6 @@ main{max-width:700px;margin:0 auto;padding:24px 16px 100px}
   <button class="bnav-btn" id="bnav-srs" onclick="showView('srs')">
     <span class="bnav-icon">🔁</span>Révision
   </button>
-  <button class="bnav-btn" id="bnav-dialogue" onclick="showView('dialogue')">
-    <span class="bnav-icon">💬</span>Dialogue
-  </button>
   <button class="bnav-btn" id="bnav-dico" onclick="showView('dico')">
     <span class="bnav-icon">🗂️</span>Dico
   </button>
@@ -202,10 +223,9 @@ let STATE = {
   srsQueue: [],
   srsIdx: 0,
   dicoSearch: '',
-  // SRS cross-leçons
-  srsBank: [], // [{ar, tr, fr, due: timestamp, interval: days, easeFactor, reps, lesson}]
-  // Dialogue
-  dialogueHistory: [], // [{role, content}]
+  srsBank: [],
+  srsSessionDone: false,
+  dialogueHistory: [],
   dialogueScenario: null,
 };
 
@@ -406,102 +426,71 @@ Génère 3 questions de quiz sur cette leçon. Format JSON strict dans le champ 
 ` : '';
 
   const prompt = `Tu es un professeur expert en arabe irakien dialectal (dialecte de Bagdad).
-Génère la leçon ${lessonNum} pour un apprenant francophone débutant, niveau ${level}.
-Sujet : ${topicToTeach}
+Tu dois générer la leçon numéro ${lessonNum} pour un apprenant francophone de niveau ${level}.
+
+Sujet de cette leçon : ${topicToTeach}
 Leçons déjà vues : ${history || 'aucune'}
 
 ${quizInstructions}
 
-CONTEXTE IMPORTANT : l'apprenant n'a PAS de clavier arabe. Il tape en translittération latine (ex: "ana", "inta", "shloonak"). Toutes les réponses attendues doivent être en translittération latine, jamais en arabe.
+Réponds UNIQUEMENT avec un objet JSON valide, sans markdown, sans balises, sans texte avant ou après.
 
-RÈGLES ABSOLUES pour les exercices :
-- Les questions des QCM sont TOUJOURS en français (ex: "Que signifie هو ?")
-- Les options des QCM montrent le mot arabe + sa translittération + sa traduction française
-- Les exercices fill : la question est en français, la réponse attendue (champ "tr") est en translittération latine simple
-- JAMAIS demander à l'apprenant d'écrire en arabe
-- JAMAIS mettre du texte arabe seul sans translittération dans une question
-
-Réponds UNIQUEMENT avec un objet JSON valide, sans markdown, sans backticks, sans texte avant ou après.
-
+Structure JSON obligatoire :
 {
-  "title": "Titre en français",
-  "titleAr": "العنوان بالعربي",
+  "title": "titre court de la leçon en français",
+  "titleAr": "titre en arabe",
   "tag": "${level} · Leçon ${lessonNum}",
   "quiz": ${prevLesson ? `[
-    {
-      "question": "Question en français sur la leçon précédente (ex: Que signifie [mot arabe] ?)",
-      "options": ["a) traduction française — translit", "b) traduction française — translit", "c) traduction française — translit", "d) traduction française — translit"],
-      "correct": "a",
-      "explanation": "Explication courte en français"
-    },
-    { "question": "...", "options": ["a) ...","b) ...","c) ...","d) ..."], "correct": "b", "explanation": "..." },
-    { "question": "...", "options": ["a) ...","b) ...","c) ...","d) ..."], "correct": "c", "explanation": "..." }
+    {"question": "...", "options": ["a) ...", "b) ...", "c) ...", "d) ..."], "correct": "a", "explanation": "..."},
+    {"question": "...", "options": ["a) ...", "b) ...", "c) ...", "d) ..."], "correct": "b", "explanation": "..."},
+    {"question": "...", "options": ["a) ...", "b) ...", "c) ...", "d) ..."], "correct": "c", "explanation": "..."}
   ]` : 'null'},
-  "explanation": "Explication pédagogique en français, 3-4 paragraphes clairs. Particularités irakiennes vs arabe standard. 5-7 min de lecture.",
-  "phonetics": "Guide de prononciation en français pour les sons difficiles de CETTE leçon uniquement. 3-5 lignes max.",
+  "explanation": "Explication claire en français, 3-4 paragraphes. Style direct et pédagogique. Mentionne les particularités irakiennes vs arabe standard. Durée de lecture : 5-7 minutes.",
   "table": [
-    {
-      "ar": "mot en arabe",
-      "tr": "translittération latine simple",
-      "fr": "traduction française",
-      "example": "phrase exemple courte",
-      "prononciation": "comment prononcer en français courant, ex: a-NA, le h est soufflé"
-    }
+    {"ar": "arabe", "tr": "translittération", "fr": "français", "example": "phrase exemple courte"},
+    ...8 à 10 entrées...
   ],
-  "tip": "Astuce mémo-technique courte et percutante en français",
+  "tip": "Une astuce ou règle mémo-technique courte et percutante",
   "exercises": [
     {
       "type": "mcq",
-      "question": "Question en français — ex: Comment dit-on 'je' en irakien ?",
+      "question": "Question en français",
       "options": [
-        {"key": "a", "ar": "أنا", "tr": "ana", "fr": "je"},
-        {"key": "b", "ar": "إنتَ", "tr": "inta", "fr": "tu (masc.)"},
-        {"key": "c", "ar": "هو", "tr": "huwwa", "fr": "il"},
-        {"key": "d", "ar": "إحنا", "tr": "ihna", "fr": "nous"}
+        {"key": "a", "ar": "arabe", "tr": "translit", "fr": "français"},
+        {"key": "b", "ar": "arabe", "tr": "translit", "fr": "français"},
+        {"key": "c", "ar": "arabe", "tr": "translit", "fr": "français"},
+        {"key": "d", "ar": "arabe", "tr": "translit", "fr": "français"}
       ],
-      "correct": "a",
-      "explanation": "Explication en français de pourquoi c'est correct"
+      "correct": "b",
+      "explanation": "Explication de la bonne réponse"
     },
     {
       "type": "mcq",
-      "question": "Deuxième question en français sur le sujet de la leçon",
-      "options": [
-        {"key": "a", "ar": "...", "tr": "...", "fr": "..."},
-        {"key": "b", "ar": "...", "tr": "...", "fr": "..."},
-        {"key": "c", "ar": "...", "tr": "...", "fr": "..."},
-        {"key": "d", "ar": "...", "tr": "...", "fr": "..."}
-      ],
+      "question": "Deuxième question",
+      "options": [...],
       "correct": "c",
       "explanation": "..."
     },
     {
       "type": "fill",
-      "question": "Écris en translittération : Comment dit-on '[phrase courte en français]' en arabe irakien ?",
-      "hint": "Commence par : [premières syllabes en translit]",
-      "answer": "mot en arabe (pour affichage)",
-      "tr": "réponse EXACTE en translittération latine que l'apprenant doit taper — ex: ana bseer",
-      "answerAlt": ["variante orthographique acceptée — ex: ana bshir"],
-      "explanation": "Explication en français"
+      "question": "Traduisez en arabe : [phrase courte]",
+      "hint": "translittération pour aider",
+      "answer": "réponse en arabe",
+      "answerAlt": ["variante acceptable si existe", ""],
+      "explanation": "Explication"
     },
     {
       "type": "fill",
-      "question": "Écris en translittération : Comment dit-on '[autre phrase en français]' en arabe irakien ?",
-      "hint": "Commence par : [premières syllabes]",
-      "answer": "mot en arabe",
-      "tr": "réponse en translittération",
+      "question": "Traduisez en arabe : [autre phrase]",
+      "hint": "translittération",
+      "answer": "réponse",
       "answerAlt": [],
-      "explanation": "Explication en français"
+      "explanation": "Explication"
     }
   ],
   "vocab": [
-    {"ar": "mot arabe", "tr": "translittération", "fr": "traduction française"},
-    {"ar": "...", "tr": "...", "fr": "..."},
-    {"ar": "...", "tr": "...", "fr": "..."},
-    {"ar": "...", "tr": "...", "fr": "..."},
-    {"ar": "...", "tr": "...", "fr": "..."},
-    {"ar": "...", "tr": "...", "fr": "..."},
-    {"ar": "...", "tr": "...", "fr": "..."},
-    {"ar": "...", "tr": "...", "fr": "..."}
+    {"ar": "mot", "tr": "translit", "fr": "français"},
+    ...8 mots...
   ]
 }`;
 
@@ -542,10 +531,10 @@ Réponds UNIQUEMENT avec un objet JSON valide, sans markdown, sans backticks, sa
     STATE.exerciseScores = {};
     STATE.srsQueue = [];
     STATE.srsIdx = 0;
-    STATE._srsSessionDone = false;
+    STATE.srsSessionDone = false;
     STATE.dialogueHistory = [];
     STATE.dialogueScenario = null;
-    srsOnNewLesson(lesson);
+    srsAddVocab(lesson.vocab||[], lesson.title||'');
     saveState();
     updateProgressBar();
     renderLessonView();
@@ -730,8 +719,7 @@ function renderLessonView(){
         <div class="section-label">Explication</div>
         <div class="lesson-content" id="lesson-explanation"></div>
 
-        ${L.phonetics ? `<div style="margin-top:16px" class="lesson-content"><div class="callout" style="border-left-color:var(--pink)">🗣️ <strong>Prononciation :</strong> ${L.phonetics}</div></div>` : ''}
-        ${L.tip ? `<div style="margin-top:12px" class="lesson-content"><div class="callout">💡 <strong>Astuce :</strong> ${L.tip}</div></div>` : ''}
+        ${L.tip ? `<div style="margin-top:16px" class="lesson-content"><div class="callout">💡 <strong>Astuce :</strong> ${L.tip}</div></div>` : ''}
 
         ${renderTableHTML(L.table)}
 
@@ -771,11 +759,6 @@ function formatExplanation(text){
     .replace(/$/, '</p>');
 }
 
-function forvoUrl(ar){
-  const word = encodeURIComponent(ar.trim());
-  return `https://forvo.com/search/${word}/ar/`;
-}
-
 function renderTableHTML(table){
   if(!table || !table.length) return '';
   return `
@@ -784,23 +767,15 @@ function renderTableHTML(table){
     <thead><tr>
       <th style="text-align:right">Arabe</th>
       <th>Translit.</th>
-      <th>Prononciation</th>
-      <th>Français · Exemple</th>
+      <th>Français</th>
+      <th>Exemple</th>
     </tr></thead>
     <tbody>
       ${table.map(r=>`<tr>
-        <td class="ar-cell">
-          <a href="${forvoUrl(r.ar||'')}" target="_blank" rel="noopener"
-            style="text-decoration:none;color:var(--orange)"
-            title="Entendre sur Forvo">${r.ar||''}</a>
-          <span style="display:block;font-size:9px;font-family:var(--font-mono);color:var(--text-dim);margin-top:2px">🔊 Forvo</span>
-        </td>
+        <td class="ar-cell">${r.ar||''}</td>
         <td class="tr-cell">${r.tr||''}</td>
-        <td style="font-size:11px;color:var(--sand-dim);font-style:italic;line-height:1.5">${r.prononciation||'—'}</td>
-        <td>
-          <span style="font-size:12px;color:var(--text);display:block">${r.fr||''}</span>
-          <span style="font-size:11px;color:var(--text-dim);font-style:italic">${r.example||''}</span>
-        </td>
+        <td style="font-size:12px;color:var(--text)">${r.fr||''}</td>
+        <td style="font-size:11px;color:var(--text-dim);font-style:italic">${r.example||''}</td>
       </tr>`).join('')}
     </tbody>
   </table>
@@ -821,7 +796,7 @@ function renderExercisesHTML(exercises){
             <span style="font-family:var(--font-mono);font-size:11px;color:var(--text-dim);min-width:16px">${o.key})</span>
             <span style="flex:1;display:flex;flex-direction:column;gap:2px">
               <span style="font-family:var(--font-arabic);font-size:20px;color:var(--orange);direction:rtl;text-align:right">${o.ar||''}</span>
-              <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim);font-style:italic">${o.tr||''} — ${o.fr||''}</span>
+              <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim)">${o.tr||''} — ${o.fr||''}</span>
             </span>
           </div>`).join('')}
         </div>
@@ -835,10 +810,8 @@ function renderExercisesHTML(exercises){
         ${ex.hint ? `<div style="font-family:var(--font-mono);font-size:11px;color:var(--text-dim);margin-bottom:10px;font-style:italic">Aide : ${ex.hint}</div>` : ''}
         <div class="text-input-wrap">
           <input type="text" id="fill-${i}"
-            placeholder="Translittération : ana, inta, shloonak..."
-            style="flex:1;background:var(--surface2);border:2px solid var(--border);color:var(--text);font-family:var(--font-mono);font-size:14px;padding:10px 13px;border-radius:10px;outline:none;direction:ltr;transition:border .15s;"
-            onfocus="this.style.borderColor='var(--orange)'"
-            onblur="this.style.borderColor='var(--border)'"
+            placeholder="Translitteration : ana, inta, ihna..."
+            style="flex:1;background:var(--surface2);border:2px solid var(--border);color:var(--text);font-family:var(--font-mono);font-size:14px;padding:10px 13px;border-radius:10px;outline:none;transition:border .15s;"
             onkeydown="if(event.key==='Enter')checkFill(${i})">
           <button class="btn btn-sm" onclick="checkFill(${i})">OK</button>
         </div>
@@ -918,43 +891,28 @@ function checkMCQ(i, el, choice){
   saveState();
 }
 
-function normalize(s){
-  // normalise pour comparaison souple : minuscules, sans accents diacritiques de translit, sans espaces doubles
-  return (s||'').toLowerCase().trim()
-    .replace(/ā/g,'a').replace(/ī/g,'i').replace(/ū/g,'u')
-    .replace(/ḥ/g,'h').replace(/ḍ/g,'d').replace(/ṭ/g,'t').replace(/ẓ/g,'z')
-    .replace(/ġ/g,'gh').replace(/ḫ/g,'kh').replace(/š/g,'sh')
-    .replace(/'/g,'').replace(/'/g,'').replace(/ʾ/g,'').replace(/ʿ/g,'')
-    .replace(/\s+/g,' ');
+function norm(s){
+  return (s||'').toLowerCase().trim().replace(/[\u0300-\u036f]/g,'');
 }
-
 function checkFill(i){
   const L = STATE.currentLesson;
   const ex = L.exercises[i];
   const inp = document.getElementById('fill-'+i);
   const val = inp.value.trim();
   const fb = document.getElementById('fb-'+i);
-  // Accepted: arabic answer, transliteration (tr), alternatives, normalized variants
-  const accepted = [ex.answer, ex.tr||'', ...(ex.answerAlt||[])].filter(Boolean);
-  const normVal = normalize(val);
-  const match = accepted.some(a => a === val || normalize(a) === normVal);
+  const accepted = [ex.tr, ex.answer, ...(ex.answerAlt||[])].filter(Boolean);
+  const match = accepted.some(a => norm(a) === norm(val));
   if(match){
     inp.style.borderColor = 'var(--green)';
-    inp.style.background = 'rgba(26,110,60,.06)';
     fb.className = 'feedback ok';
-    fb.textContent = '✓ ' + (ex.explanation || 'Parfait !') + (ex.tr ? ` (${ex.tr})` : '');
+    fb.textContent = '✓ ' + (ex.explanation||'Parfait !') + (ex.tr ? ' ('+ex.tr+')' : '');
     STATE.exerciseScores[i] = 1;
   } else {
     inp.style.borderColor = 'var(--red)';
-    inp.style.background = 'rgba(192,57,43,.06)';
     fb.className = 'feedback ko';
-    fb.textContent = `✗ Réponse attendue : ${ex.tr||''} (${ex.answer}) — ${ex.explanation||''}`;
+    fb.textContent = 'Reponse : ' + (ex.tr||ex.answer) + ' — ' + (ex.explanation||'');
     STATE.exerciseScores[i] = 0;
-    setTimeout(()=>{
-      inp.style.borderColor = 'var(--border)';
-      inp.style.background = 'var(--surface2)';
-      inp.value='';
-    }, 2000);
+    setTimeout(()=>{ inp.style.borderColor='var(--border)'; inp.value=''; }, 2000);
   }
   saveState();
 }
@@ -1019,49 +977,32 @@ function renderVocabView(){
 }
 
 // ============================================================
-// SRS BANK — cross-leçons (algorithme SM-2 simplifié)
+// SRS BANK (SM-2 cross-lecons)
 // ============================================================
 function srsAddVocab(vocabArr, lessonTitle){
   const now = Date.now();
-  const existing = new Set(STATE.srsBank.map(w => w.ar));
-  vocabArr.forEach(v => {
+  const existing = new Set(STATE.srsBank.map(w=>w.ar));
+  (vocabArr||[]).forEach(v=>{
     if(!existing.has(v.ar)){
-      STATE.srsBank.push({
-        ar: v.ar, tr: v.tr, fr: v.fr,
-        lesson: lessonTitle,
-        due: now,           // due immédiatement
-        interval: 1,        // jours avant prochaine révision
-        easeFactor: 2.5,    // facteur de facilité SM-2
-        reps: 0,
-      });
+      STATE.srsBank.push({ar:v.ar,tr:v.tr,fr:v.fr,lesson:lessonTitle,due:now,interval:1,easeFactor:2.5,reps:0});
     }
   });
   saveState();
 }
-
-function srsGetDueCards(){
-  const now = Date.now();
-  return STATE.srsBank
-    .filter(w => w.due <= now)
-    .sort((a,b) => a.due - b.due);
+function srsGetDue(){
+  return STATE.srsBank.filter(w=>w.due<=Date.now()).sort((a,b)=>a.due-b.due);
 }
-
-function srsRate(word, rating){ // rating: 'hard'=1, 'ok'=3, 'easy'=5
-  const scores = {hard:1, ok:3, easy:5};
-  const q = scores[rating];
-  const w = STATE.srsBank.find(x => x.ar === word.ar);
-  if(!w) return;
-  if(q < 3){
-    w.reps = 0;
-    w.interval = 1;
-  } else {
-    w.easeFactor = Math.max(1.3, w.easeFactor + 0.1 - (5-q)*(0.08+(5-q)*0.02));
-    if(w.reps === 0) w.interval = 1;
-    else if(w.reps === 1) w.interval = 6;
-    else w.interval = Math.round(w.interval * w.easeFactor);
+function srsRate(word,rating){
+  const q={hard:1,ok:3,easy:5}[rating];
+  const w=STATE.srsBank.find(x=>x.ar===word.ar);
+  if(!w)return;
+  if(q<3){w.reps=0;w.interval=1;}
+  else{
+    w.easeFactor=Math.max(1.3,w.easeFactor+0.1-(5-q)*(0.08+(5-q)*0.02));
+    w.interval=w.reps===0?1:w.reps===1?6:Math.round(w.interval*w.easeFactor);
     w.reps++;
   }
-  w.due = Date.now() + w.interval * 86400000;
+  w.due=Date.now()+w.interval*86400000;
   saveState();
 }
 
@@ -1069,171 +1010,153 @@ function srsRate(word, rating){ // rating: 'hard'=1, 'ok'=3, 'easy'=5
 // SRS VIEW
 // ============================================================
 function renderSRSView(){
-  // Ajouter vocab leçon courante si pas encore dans la banque
-  if(STATE.currentLesson?.vocab){
-    srsAddVocab(STATE.currentLesson.vocab, STATE.currentLesson.title);
+  if(STATE.currentLesson&&STATE.currentLesson.vocab) srsAddVocab(STATE.currentLesson.vocab,STATE.currentLesson.title);
+  const due=srsGetDue();
+  const total=STATE.srsBank.length;
+  if(!STATE.srsQueue||STATE.srsQueue.length===0||STATE.srsSessionDone){
+    STATE.srsQueue=due.slice(0,20);STATE.srsIdx=0;STATE.srsSessionDone=false;saveState();
   }
-
-  const due = srsGetDueCards();
-  const total = STATE.srsBank.length;
-  const dueCount = due.length;
-
-  // Préparer queue de révision
-  if(!STATE.srsQueue || STATE.srsQueue.length === 0 || STATE._srsSessionDone){
-    STATE.srsQueue = due.slice(0, 20); // max 20 cartes par session
-    STATE.srsIdx = 0;
-    STATE._srsSessionDone = false;
-    saveState();
-  }
-
-  document.getElementById('main-content').innerHTML = `
+  const dc=due.length;
+  document.getElementById('main-content').innerHTML=`
   <div class="lesson-card">
     <div class="lesson-header">
-      <div class="lesson-tag">Révision espacée · toutes leçons</div>
+      <div class="lesson-tag">Revision - toutes lecons</div>
       <div class="lesson-title">Flashcards</div>
-      <div class="lesson-sub">${dueCount} carte${dueCount>1?'s':''} à réviser · ${total} mot${total>1?'s':''} au total</div>
-    </div>
-    <div style="padding:12px 20px;border-bottom:2px solid var(--border);display:flex;gap:10px;flex-wrap:wrap">
-      <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim)">
-        🟠 À réviser aujourd'hui : <strong style="color:var(--orange)">${dueCount}</strong>
-      </span>
-      <span style="font-family:var(--font-mono);font-size:10px;color:var(--text-dim)">
-        📚 Banque totale : <strong style="color:var(--orange)">${total}</strong>
-      </span>
+      <div class="lesson-sub">${dc} carte${dc>1?'s':''} a reviser · ${total} mots total</div>
     </div>
     <div class="section">
-      ${dueCount === 0 ? `
-        <div class="complete-wrap">
-          <div class="complete-icon">✅</div>
-          <div class="complete-title">Tout à jour !</div>
-          <div class="complete-sub">Aucune carte à réviser maintenant. Reviens demain.</div>
-        </div>` : `
+      ${dc===0?'<div style="padding:30px;text-align:center;color:var(--text-dim)">Tout a jour ! Reviens demain.</div>':`
       <div class="srs-card" id="srs-card">
-        <div style="font-family:var(--font-mono);font-size:9px;color:var(--text-dim);margin-bottom:8px" id="srs-lesson-tag">—</div>
-        <div class="srs-ar" id="srs-ar">—</div>
+        <div style="font-family:var(--font-mono);font-size:9px;color:var(--text-dim);margin-bottom:6px" id="srs-ltag"></div>
+        <div class="srs-ar" id="srs-ar">-</div>
         <div class="srs-q">Que signifie ce mot ?</div>
         <div class="srs-answer" id="srs-answer">
-          <div id="srs-fr" style="font-size:16px;font-weight:600">—</div>
-          <div class="srs-tr" id="srs-tr">—</div>
+          <div id="srs-fr" style="font-size:16px;font-weight:600">-</div>
+          <div class="srs-tr" id="srs-tr">-</div>
         </div>
-        <button class="btn btn-sm" id="srs-reveal" onclick="revealSRS()">Révéler</button>
+        <button class="btn btn-sm" id="srs-reveal" onclick="revealSRS()">Reveler</button>
         <div class="srs-btns" id="srs-btns" style="display:none">
-          <button class="btn btn-sm btn-red" onclick="rateSRS('hard')">😰 Difficile<br><span style="font-size:9px">demain</span></button>
-          <button class="btn btn-sm btn-orange" onclick="rateSRS('ok')">🤔 À revoir<br><span style="font-size:9px">+3j</span></button>
-          <button class="btn btn-sm btn-green" onclick="rateSRS('easy')">😊 Facile !<br><span style="font-size:9px">+${Math.round((STATE.srsQueue[STATE.srsIdx]?.interval||1)*2.5)}j</span></button>
+          <button class="btn btn-sm btn-red" onclick="rateSRS('hard')">Difficile</button>
+          <button class="btn btn-sm btn-orange" onclick="rateSRS('ok')">A revoir</button>
+          <button class="btn btn-sm btn-green" onclick="rateSRS('easy')">Facile !</button>
         </div>
-        <div class="srs-counter" id="srs-counter">—</div>
+        <div class="srs-counter" id="srs-counter">-</div>
       </div>
       <div id="srs-done" style="display:none" class="complete-wrap">
         <div class="complete-icon">🌟</div>
-        <div class="complete-title">Session terminée !</div>
-        <div class="complete-sub" style="font-family:var(--font-arabic);font-size:20px;color:var(--orange)">أحسنت — Bravo !</div>
-        <div style="margin-top:8px;font-size:12px;color:var(--text-dim);font-family:var(--font-mono)" id="srs-next-info"></div>
-        <div style="margin-top:20px">
-          <button class="btn btn-sm" onclick="restartSRS()">↺ Refaire</button>
-        </div>
+        <div class="complete-title">Session terminee !</div>
+        <div style="margin-top:16px"><button class="btn btn-sm" onclick="restartSRS()">Recommencer</button></div>
       </div>`}
     </div>
   </div>`;
-
-  if(dueCount > 0) showSRSCard();
+  if(dc>0) showSRSCard();
 }
-
 function showSRSCard(){
-  const q = STATE.srsQueue;
-  if(STATE.srsIdx >= q.length){ endSRS(); return; }
-  const w = q[STATE.srsIdx];
-  const ltag = document.getElementById('srs-lesson-tag');
-  const ar = document.getElementById('srs-ar');
-  const fr = document.getElementById('srs-fr');
-  const tr = document.getElementById('srs-tr');
-  const counter = document.getElementById('srs-counter');
-  if(ltag) ltag.textContent = w.lesson || '';
-  if(ar) ar.textContent = w.ar;
-  if(fr) fr.textContent = w.fr;
-  if(tr) tr.textContent = w.tr;
-  document.getElementById('srs-answer')?.classList.remove('show');
-  const rev = document.getElementById('srs-reveal');
-  const btns = document.getElementById('srs-btns');
-  if(rev) rev.style.display = '';
-  if(btns) btns.style.display = 'none';
-  if(counter) counter.textContent = `Carte ${STATE.srsIdx+1} / ${q.length}`;
+  const q=STATE.srsQueue;
+  if(STATE.srsIdx>=q.length){endSRS();return;}
+  const w=q[STATE.srsIdx];
+  const g=id=>document.getElementById(id);
+  if(g('srs-ltag'))g('srs-ltag').textContent=w.lesson||'';
+  if(g('srs-ar'))g('srs-ar').textContent=w.ar;
+  if(g('srs-fr'))g('srs-fr').textContent=w.fr;
+  if(g('srs-tr'))g('srs-tr').textContent=w.tr;
+  if(g('srs-answer'))g('srs-answer').classList.remove('show');
+  if(g('srs-reveal'))g('srs-reveal').style.display='';
+  if(g('srs-btns'))g('srs-btns').style.display='none';
+  if(g('srs-counter'))g('srs-counter').textContent='Carte '+(STATE.srsIdx+1)+' / '+q.length;
 }
-
 function revealSRS(){
   document.getElementById('srs-answer').classList.add('show');
-  document.getElementById('srs-reveal').style.display = 'none';
-  document.getElementById('srs-btns').style.display = 'flex';
+  document.getElementById('srs-reveal').style.display='none';
+  document.getElementById('srs-btns').style.display='flex';
 }
-
 function rateSRS(rating){
-  const w = STATE.srsQueue[STATE.srsIdx];
-  srsRate(w, rating);
-  STATE.srsIdx++;
-  saveState();
-  showSRSCard();
+  srsRate(STATE.srsQueue[STATE.srsIdx],rating);
+  STATE.srsIdx++;saveState();showSRSCard();
 }
-
 function restartSRS(){
-  STATE.srsQueue = [];
-  STATE._srsSessionDone = false;
-  saveState();
-  renderSRSView();
+  STATE.srsQueue=[];STATE.srsSessionDone=false;saveState();renderSRSView();
 }
-
 function endSRS(){
-  STATE._srsSessionDone = true;
-  saveState();
-  const card = document.getElementById('srs-card');
-  const done = document.getElementById('srs-done');
-  if(card) card.style.display = 'none';
-  if(done) done.style.display = 'block';
-  const next = srsGetDueCards().length;
-  const info = document.getElementById('srs-next-info');
-  if(info) info.textContent = next > 0 ? `${next} carte${next>1?'s':''} encore à réviser` : 'Reviens demain pour la prochaine session.';
-}
-
-// Intégrer vocab dans la banque à chaque nouvelle leçon générée
-function srsOnNewLesson(lesson){
-  srsAddVocab(lesson.vocab || [], lesson.title || '');
+  STATE.srsSessionDone=true;saveState();
+  const c=document.getElementById('srs-card');
+  const d=document.getElementById('srs-done');
+  if(c)c.style.display='none';
+  if(d)d.style.display='block';
 }
 
 // ============================================================
-// DIALOGUE VIEW — conversation libre avec Claude
+// DICO VIEW
 // ============================================================
-
-const DIALOGUE_SCENARIOS = [
-  { id:"taxi",      emoji:"🚕", label:"Dans un taxi",          context:"Tu prends un taxi à Bagdad. Le chauffeur te demande où tu vas et engage la conversation." },
-  { id:"marche",    emoji:"🛒", label:"Au marché",             context:"Tu fais des courses dans un souk à Bagdad. Le vendeur t'accueille et propose ses produits." },
-  { id:"cafe",      emoji:"☕", label:"Au café",               context:"Tu t'installes dans un café irakien. Le serveur prend ta commande et bavarde." },
-  { id:"voisin",    emoji:"👋", label:"Rencontrer un voisin",  context:"Tu croises ton voisin irakien dans la rue. Il te demande comment tu vas." },
-  { id:"telephone", emoji:"📱", label:"Coup de téléphone",     context:"Tu appelles un ami irakien pour fixer un rendez-vous." },
-  { id:"libre",     emoji:"🎲", label:"Situation libre",       context:"Claude choisit une situation quotidienne adaptée à ton niveau." },
-];
-
-function renderDialogueView(){
-  if(!STATE.dialogueScenario){
-    renderDialogueScenarioPicker();
+function renderDicoView(){
+  const history=STATE.history||[];
+  const all=[];
+  history.forEach(h=>(h.vocab||[]).forEach(w=>all.push({...w,lesson:h.title})));
+  const total=all.length;
+  const sv=STATE.dicoSearch||'';
+  const filtered=sv?all.filter(w=>(w.fr||'').toLowerCase().includes(sv.toLowerCase())||(w.ar||'').includes(sv)||(w.tr||'').toLowerCase().includes(sv.toLowerCase())):all;
+  const byLesson={};
+  filtered.forEach(w=>{const k=w.lesson||'?';if(!byLesson[k])byLesson[k]=[];byLesson[k].push(w);});
+  let html='';
+  if(!filtered.length){
+    html='<div style="padding:30px;text-align:center;color:var(--text-dim)">'+(total===0?'Aucun mot encore appris.':'Aucun resultat.')+'</div>';
   } else {
-    renderDialogueChat();
+    html=Object.keys(byLesson).reverse().map(lesson=>`
+      <div style="margin-bottom:18px">
+        <div style="font-family:var(--font-mono);font-size:10px;color:var(--orange);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">${lesson} (${byLesson[lesson].length})</div>
+        ${byLesson[lesson].map(w=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--surface2);border-radius:8px;margin-bottom:3px">
+          <span style="font-family:var(--font-arabic);font-size:18px;color:var(--orange);min-width:50px;text-align:right;direction:rtl">${w.ar}</span>
+          <span style="font-family:var(--font-mono);font-size:11px;color:var(--sand-dim);min-width:75px">${w.tr}</span>
+          <span style="font-size:12px;color:var(--text)">${w.fr}</span>
+        </div>`).join('')}
+      </div>`).join('');
   }
-}
-
-function renderDialogueScenarioPicker(){
-  document.getElementById('main-content').innerHTML = `
+  document.getElementById('main-content').innerHTML=`
   <div class="lesson-card">
     <div class="lesson-header">
-      <div class="lesson-tag">Dialogue · oral simulé</div>
+      <div class="lesson-tag">Dictionnaire personnel</div>
+      <div class="lesson-title">Mots appris</div>
+      <div class="lesson-sub">${total} mot${total>1?'s':''} · ${history.length} lecon${history.length>1?'s':''}</div>
+    </div>
+    <div style="padding:12px 16px;border-bottom:2px solid var(--border)">
+      <input type="search" placeholder="Rechercher..." value="${sv}"
+        oninput="STATE.dicoSearch=this.value;renderDicoView()"
+        style="width:100%;background:var(--surface2);border:2px solid var(--border);color:var(--text);font-family:var(--font-mono);font-size:12px;padding:9px 12px;border-radius:8px;outline:none;">
+    </div>
+    <div style="padding:14px 16px 20px">${html}</div>
+  </div>`;
+}
+
+// ============================================================
+// DIALOGUE VIEW
+// ============================================================
+const DIALOGUE_SCENARIOS=[
+  {id:"taxi",emoji:"🚕",label:"Dans un taxi",context:"Tu prends un taxi a Bagdad. Le chauffeur te demande ou tu vas."},
+  {id:"marche",emoji:"🛒",label:"Au marche",context:"Tu fais des courses dans un souk. Le vendeur propose ses produits."},
+  {id:"cafe",emoji:"☕",label:"Au cafe",context:"Tu commandes dans un cafe irakien. Le serveur bavarde avec toi."},
+  {id:"voisin",emoji:"👋",label:"Avec un voisin",context:"Tu croises ton voisin irakien. Il demande comment tu vas."},
+  {id:"telephone",emoji:"📱",label:"Coup de telephone",context:"Tu appelles un ami irakien pour fixer un rendez-vous."},
+  {id:"libre",emoji:"🎲",label:"Situation libre",context:"Claude choisit une situation adaptee a ton niveau."},
+];
+function renderDialogueView(){
+  if(!STATE.dialogueScenario) renderDialogueScenarioPicker();
+  else renderDialogueChat();
+}
+function renderDialogueScenarioPicker(){
+  document.getElementById('main-content').innerHTML=`
+  <div class="lesson-card">
+    <div class="lesson-header">
+      <div class="lesson-tag">Dialogue oral</div>
       <div class="lesson-title">Choisis une situation</div>
-      <div class="lesson-sub">Claude joue le rôle d'un locuteur natif irakien · réponds en arabe</div>
+      <div class="lesson-sub">Claude joue un irakien natif · tape en translitteration</div>
     </div>
     <div class="section">
       <div style="display:flex;flex-direction:column;gap:10px">
         ${DIALOGUE_SCENARIOS.map(s=>`
         <div onclick="startDialogue('${s.id}')"
-          style="display:flex;align-items:center;gap:14px;background:var(--surface2);border:2px solid var(--border);border-radius:12px;padding:14px 16px;cursor:pointer;transition:all .15s"
+          style="display:flex;align-items:center;gap:14px;background:var(--surface2);border:2px solid var(--border);border-radius:12px;padding:14px 16px;cursor:pointer;transition:border .15s"
           onmouseover="this.style.borderColor='var(--orange)'" onmouseout="this.style.borderColor='var(--border)'">
-          <span style="font-size:24px">${s.emoji}</span>
+          <span style="font-size:22px">${s.emoji}</span>
           <div>
             <div style="font-size:14px;font-weight:600;color:var(--sand)">${s.label}</div>
             <div style="font-size:11px;color:var(--text-dim);margin-top:2px">${s.context}</div>
@@ -1243,223 +1166,101 @@ function renderDialogueScenarioPicker(){
     </div>
   </div>`;
 }
-
 async function startDialogue(scenarioId){
-  const scenario = DIALOGUE_SCENARIOS.find(s=>s.id===scenarioId);
-  STATE.dialogueScenario = scenario;
-  STATE.dialogueHistory = [];
-  saveState();
+  STATE.dialogueScenario=DIALOGUE_SCENARIOS.find(s=>s.id===scenarioId);
+  STATE.dialogueHistory=[];saveState();
   renderDialogueChat();
-  await sendDialogueMessage(null); // premier message de Claude
+  await sendDialogueMessage(null);
 }
-
 function renderDialogueChat(){
-  const s = STATE.dialogueScenario;
-  document.getElementById('main-content').innerHTML = `
+  const s=STATE.dialogueScenario;
+  document.getElementById('main-content').innerHTML=`
   <div class="lesson-card">
     <div class="lesson-header" style="display:flex;align-items:center;justify-content:space-between">
       <div>
         <div class="lesson-tag">Dialogue · ${s.emoji} ${s.label}</div>
-        <div class="lesson-title" style="font-size:17px">Conversation libre</div>
-        <div class="lesson-sub">Réponds en arabe · Claude te corrige à la fin</div>
+        <div class="lesson-title" style="font-size:17px">Conversation</div>
+        <div class="lesson-sub">Tape en translitteration · ex: ana bseer</div>
       </div>
-      <button class="btn btn-sm" onclick="endDialogue()" style="flex-shrink:0">✕ Quitter</button>
+      <button class="btn btn-sm" onclick="endDialogue()">Quitter</button>
     </div>
-    <div id="dialogue-messages" style="padding:16px 18px;display:flex;flex-direction:column;gap:12px;min-height:200px;max-height:55vh;overflow-y:auto"></div>
-    <div style="padding:14px 18px;border-top:2px solid var(--border);display:flex;gap:8px;align-items:flex-end">
-      <textarea id="dialogue-input"
-        placeholder="Écris en translittération : ana bseer, shukran..."
-        style="flex:1;background:var(--surface2);border:2px solid var(--border);color:var(--text);font-family:var(--font-mono);font-size:15px;padding:10px 13px;border-radius:10px;outline:none;direction:ltr;resize:none;min-height:48px;max-height:120px;transition:border .15s;line-height:1.5"
-        onfocus="this.style.borderColor='var(--orange)'"
-        onblur="this.style.borderColor='var(--border)'"
-        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendUserDialogue()}"
-        rows="2"></textarea>
-      <button class="btn btn-primary btn-sm" onclick="sendUserDialogue()" style="flex-shrink:0;padding:12px 16px">→</button>
+    <div id="dlg-msgs" style="padding:14px 16px;display:flex;flex-direction:column;gap:10px;min-height:180px;max-height:50vh;overflow-y:auto"></div>
+    <div style="padding:12px 16px;border-top:2px solid var(--border);display:flex;gap:8px">
+      <input type="text" id="dlg-input" placeholder="ana, shloonak, maku mushkila..."
+        style="flex:1;background:var(--surface2);border:2px solid var(--border);color:var(--text);font-family:var(--font-mono);font-size:14px;padding:10px 12px;border-radius:10px;outline:none;"
+        onkeydown="if(event.key==='Enter')sendUserDialogue()">
+      <button class="btn btn-primary btn-sm" onclick="sendUserDialogue()">→</button>
     </div>
-    <div style="padding:4px 18px 0;font-family:var(--font-mono);font-size:9px;color:var(--text-dim)">
-      💡 Translittération acceptée — ex: ana bseer, shukran, shloonak, maku mushkila
-    </div>
-    <div style="padding:8px 18px 14px;text-align:center">
-      <button class="btn btn-sm" onclick="requestDialogueCorrection()" style="border-color:var(--pink);color:var(--pink)">🔍 Demander une correction complète</button>
+    <div style="padding:8px 16px 14px;text-align:center">
+      <button class="btn btn-sm" onclick="requestDialogueCorrection()" style="border-color:var(--pink);color:var(--pink)">Demander correction</button>
     </div>
   </div>`;
-
-  // Render existing messages
-  STATE.dialogueHistory.forEach(m => appendDialogueMessage(m.role, m.content));
-
-  // If no messages yet, loading state
-  if(STATE.dialogueHistory.length === 0){
-    appendDialogueMessage('assistant', '...');
-  }
+  STATE.dialogueHistory.forEach(m=>appendDlgMsg(m.role,m.content));
 }
-
-function appendDialogueMessage(role, content){
-  const container = document.getElementById('dialogue-messages');
-  if(!container) return;
-  // Remove loading dots if present
-  const dots = container.querySelector('.loading-dots');
-  if(dots) dots.remove();
-
-  const isUser = role === 'user';
-  const div = document.createElement('div');
-  div.style.cssText = `display:flex;flex-direction:column;align-items:${isUser?'flex-end':'flex-start'};gap:3px`;
-
-  const bubble = document.createElement('div');
-  bubble.style.cssText = `
-    max-width:85%;padding:10px 14px;border-radius:${isUser?'14px 14px 4px 14px':'14px 14px 14px 4px'};
-    font-family:var(--font-arabic);font-size:17px;direction:rtl;text-align:right;line-height:1.6;
-    background:${isUser?'var(--orange)':'var(--surface2)'};
-    color:${isUser?'#fff':'var(--sand)'};
-    border:${isUser?'none':'2px solid var(--border)'};
-  `;
-  bubble.textContent = content;
-
-  const label = document.createElement('div');
-  label.style.cssText = `font-family:var(--font-mono);font-size:9px;color:var(--text-dim);margin:0 4px`;
-  label.textContent = isUser ? 'Toi' : 'Locuteur irakien';
-
-  div.appendChild(label);
-  div.appendChild(bubble);
-  container.appendChild(div);
-  container.scrollTop = container.scrollHeight;
+function appendDlgMsg(role,content){
+  const c=document.getElementById('dlg-msgs');if(!c)return;
+  c.querySelectorAll('.dlg-loading').forEach(d=>d.remove());
+  const isUser=role==='user';
+  const wrap=document.createElement('div');
+  wrap.style.cssText='display:flex;flex-direction:column;align-items:'+(isUser?'flex-end':'flex-start')+';gap:2px';
+  const lbl=document.createElement('div');
+  lbl.style.cssText='font-family:var(--font-mono);font-size:9px;color:var(--text-dim);margin:0 4px';
+  lbl.textContent=isUser?'Toi':'Locuteur irakien';
+  const bubble=document.createElement('div');
+  bubble.style.cssText='max-width:85%;padding:10px 14px;border-radius:'+(isUser?'14px 14px 4px 14px':'14px 14px 14px 4px')+';font-family:var(--font-arabic);font-size:17px;direction:rtl;line-height:1.6;background:'+(isUser?'var(--orange)':'var(--surface2)')+';color:'+(isUser?'#fff':'var(--sand)')+';border:'+(isUser?'none':'2px solid var(--border)')+';';
+  bubble.textContent=content;
+  wrap.appendChild(lbl);wrap.appendChild(bubble);c.appendChild(wrap);
+  c.scrollTop=c.scrollHeight;
 }
-
-function appendLoadingDots(){
-  const container = document.getElementById('dialogue-messages');
-  if(!container) return;
-  const div = document.createElement('div');
-  div.className = 'loading-dots';
-  div.style.cssText = 'display:flex;align-items:center;gap:4px;padding:8px 0';
-  div.innerHTML = `
-    <div style="width:8px;height:8px;background:var(--border);border-radius:50%;animation:pulse 1s infinite"></div>
-    <div style="width:8px;height:8px;background:var(--border);border-radius:50%;animation:pulse 1s infinite .2s"></div>
-    <div style="width:8px;height:8px;background:var(--border);border-radius:50%;animation:pulse 1s infinite .4s"></div>
-    <style>@keyframes pulse{0%,100%{opacity:.3}50%{opacity:1}}</style>`;
-  container.appendChild(div);
-  container.scrollTop = container.scrollHeight;
+function appendDlgLoading(){
+  const c=document.getElementById('dlg-msgs');if(!c)return;
+  const d=document.createElement('div');d.className='dlg-loading';
+  d.style.cssText='padding:8px 4px;color:var(--text-dim);font-size:18px;letter-spacing:3px';
+  d.textContent='...';c.appendChild(d);c.scrollTop=c.scrollHeight;
 }
-
 async function sendUserDialogue(){
-  const inp = document.getElementById('dialogue-input');
-  if(!inp) return;
-  const text = inp.value.trim();
-  if(!text) return;
-  inp.value = '';
-  STATE.dialogueHistory.push({role:'user', content:text});
-  saveState();
-  appendDialogueMessage('user', text);
+  const inp=document.getElementById('dlg-input');if(!inp)return;
+  const text=inp.value.trim();if(!text)return;
+  inp.value='';
+  STATE.dialogueHistory.push({role:'user',content:text});saveState();
+  appendDlgMsg('user',text);
   await sendDialogueMessage(text);
 }
-
 async function sendDialogueMessage(userMsg){
-  appendLoadingDots();
-  const s = STATE.dialogueScenario;
-  const level = STATE.level;
-  const recentVocab = STATE.history.slice(-3).flatMap(h=>h.vocab||[]).map(v=>v.ar).join('، ');
-
-  const systemPrompt = `Tu es un locuteur natif irakien (dialecte de Bagdad). Tu joues le rôle suivant : ${s.context}
-Règles absolues :
-- Réponds UNIQUEMENT en arabe dialectal irakien (pas d'arabe standard)
-- Phrases courtes, adaptées au niveau ${level}
-- Sois naturel et chaleureux, comme dans une vraie conversation
-- N'explique rien, ne traduis pas, reste dans le personnage
-- L'utilisateur écrit en translittération latine (ex: "ana bseer", "shloonak", "maku mushkila") — comprends et réponds normalement en arabe
-- Si l'utilisateur fait une erreur de grammaire ou de vocabulaire, ne la corriger PAS maintenant — continue la conversation naturellement
-- Vocabulaire connu de l'utilisateur : ${recentVocab || 'basique'}`;
-
-  const messages = [
-    ...STATE.dialogueHistory.map(m=>({role:m.role, content:m.content})),
-  ];
-  if(!userMsg){
-    messages.push({role:'user', content:'Commence la conversation selon ton rôle.'});
-  }
-
-  try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'x-api-key':STATE.apiKey,
-        'anthropic-version':'2023-06-01',
-        'anthropic-dangerous-direct-browser-access':'true'
-      },
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:300,
-        system:systemPrompt,
-        messages,
-      })
-    });
-    const data = await response.json();
-    const reply = data.content?.map(c=>c.text||'').join('') || '...';
-    STATE.dialogueHistory.push({role:'assistant', content:reply});
-    saveState();
-    appendDialogueMessage('assistant', reply);
-  } catch(e){
-    appendDialogueMessage('assistant', '(Erreur de connexion — vérifie ta clé API)');
-  }
+  appendDlgLoading();
+  const s=STATE.dialogueScenario;
+  const recentVocab=STATE.history.slice(-3).flatMap(h=>h.vocab||[]).map(v=>v.tr).join(', ');
+  const sys="Tu es un locuteur natif irakien (dialecte de Bagdad). Role: "+s.context+" Reponds uniquement en arabe dialectal irakien, phrases courtes, niveau "+STATE.level+". L'utilisateur tape en translitteration latine, comprends-le. Ne corrige pas maintenant. Vocabulaire connu: "+(recentVocab||'basique');
+  const msgs=[...STATE.dialogueHistory];
+  if(!userMsg)msgs.push({role:'user',content:'Commence la conversation.'});
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':STATE.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:250,system:sys,messages:msgs})});
+    const data=await r.json();
+    const reply=(data.content||[]).map(c=>c.text||'').join('')||'...';
+    STATE.dialogueHistory.push({role:'assistant',content:reply});saveState();
+    appendDlgMsg('assistant',reply);
+  }catch(e){appendDlgMsg('assistant','(Erreur connexion)');}
 }
-
 async function requestDialogueCorrection(){
-  if(STATE.dialogueHistory.length < 2){
-    alert("Échange d'abord quelques messages avant de demander une correction !");
-    return;
-  }
-  appendLoadingDots();
-
-  const userMessages = STATE.dialogueHistory.filter(m=>m.role==='user').map(m=>m.content).join(' / ');
-  const prompt = `Voici les réponses en arabe irakien d'un apprenant francophone de niveau ${STATE.level} pendant un dialogue :
-"${userMessages}"
-
-Fais une correction pédagogique en français :
-1. Ce qui était correct (en arabe + traduction)
-2. Les erreurs et comment les corriger
-3. Vocabulaire ou expressions plus naturelles à utiliser
-4. Note globale sur 5 et encouragement en arabe irakien
-
-Sois précis mais bienveillant.`;
-
-  try {
-    const response = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'x-api-key':STATE.apiKey,
-        'anthropic-version':'2023-06-01',
-        'anthropic-dangerous-direct-browser-access':'true'
-      },
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:800,
-        messages:[{role:'user', content:prompt}]
-      })
-    });
-    const data = await response.json();
-    const correction = data.content?.map(c=>c.text||'').join('') || '';
-
-    // Afficher la correction dans une card séparée
-    const container = document.getElementById('dialogue-messages');
-    if(!container) return;
-    const dots = container.querySelector('.loading-dots');
-    if(dots) dots.remove();
-
-    const div = document.createElement('div');
-    div.style.cssText = 'background:rgba(212,32,96,.06);border:2px solid rgba(212,32,96,.2);border-radius:12px;padding:14px 16px;margin-top:8px';
-    div.innerHTML = `
-      <div style="font-family:var(--font-mono);font-size:10px;color:var(--pink);letter-spacing:1px;margin-bottom:8px;text-transform:uppercase">🔍 Correction</div>
-      <div style="font-size:13px;color:var(--sand);line-height:1.7;white-space:pre-wrap">${correction}</div>`;
-    container.appendChild(div);
-    container.scrollTop = container.scrollHeight;
-  } catch(e){
-    alert('Erreur lors de la correction — vérifie ta clé API.');
-  }
+  if(STATE.dialogueHistory.length<2){alert("Echange quelques messages d'abord !");return;}
+  appendDlgLoading();
+  const userMsgs=STATE.dialogueHistory.filter(m=>m.role==='user').map(m=>m.content).join(' / ');
+  const prompt="Voici les reponses d'un apprenant francophone niveau "+STATE.level+" en dialogue irakien : "+userMsgs+". Fais une correction pedagogique en francais : 1. Ce qui etait correct 2. Les erreurs et corrections 3. Expressions plus naturelles 4. Note sur 5 et encouragement en arabe irakien.";
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':STATE.apiKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,messages:[{role:'user',content:prompt}]})});
+    const data=await r.json();
+    const correction=(data.content||[]).map(c=>c.text||'').join('');
+    const c=document.getElementById('dlg-msgs');if(!c)return;
+    c.querySelectorAll('.dlg-loading').forEach(d=>d.remove());
+    const div=document.createElement('div');
+    div.style.cssText='background:rgba(212,32,96,.06);border:2px solid rgba(212,32,96,.2);border-radius:12px;padding:14px 16px;margin-top:8px';
+    const t=document.createElement('div');t.style.cssText='font-family:var(--font-mono);font-size:10px;color:var(--pink);margin-bottom:8px';t.textContent='Correction';
+    const b=document.createElement('div');b.style.cssText='font-size:13px;color:var(--sand);line-height:1.7;white-space:pre-wrap';b.textContent=correction;
+    div.appendChild(t);div.appendChild(b);c.appendChild(div);c.scrollTop=c.scrollHeight;
+  }catch(e){alert('Erreur correction');}
 }
-
 function endDialogue(){
-  STATE.dialogueScenario = null;
-  STATE.dialogueHistory = [];
-  saveState();
-  renderDialogueView();
+  STATE.dialogueScenario=null;STATE.dialogueHistory=[];saveState();renderDialogueView();
 }
 
 // ============================================================
