@@ -32,7 +32,7 @@ header{padding:14px 18px;display:flex;align-items:center;justify-content:space-b
 .progress-track{height:5px;background:var(--surface2);border-radius:3px;overflow:hidden}
 .progress-fill{height:100%;background:linear-gradient(90deg,var(--orange),var(--pink));border-radius:3px;transition:width 1s ease}
 
-main{max-width:700px;margin:0 auto;padding:24px 16px 100px}
+main{max-width:700px;margin:0 auto;padding:24px 16px 90px}
 
 /* SETUP SCREEN */
 #setup-screen{text-align:center;padding:40px 20px}
@@ -155,10 +155,27 @@ main{max-width:700px;margin:0 auto;padding:24px 16px 100px}
 .quiz-banner strong{color:var(--gold);font-size:12px;font-family:var(--font-mono);letter-spacing:.5px;display:block;margin-bottom:4px}
 
 /* BOTTOM NAV */
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);display:flex;z-index:50}
-.bnav-btn{flex:1;padding:12px 4px 14px;font-family:var(--font-mono);font-size:9px;background:none;border:none;color:var(--text-dim);cursor:pointer;text-align:center;text-transform:uppercase;letter-spacing:.5px;transition:color .15s;}
+
+/* HAMBURGER MENU */
+.menu-overlay{display:none;position:fixed;inset:0;background:rgba(42,18,0,.5);z-index:200;backdrop-filter:blur(2px)}
+.menu-overlay.open{display:block}
+.menu-drawer{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:2px solid var(--border);border-radius:20px 20px 0 0;z-index:201;padding:0 0 24px;transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1)}
+.menu-drawer.open{transform:translateY(0)}
+.menu-handle{width:40px;height:4px;background:var(--border);border-radius:2px;margin:12px auto 16px}
+.menu-item{display:flex;align-items:center;gap:14px;padding:14px 24px;cursor:pointer;transition:background .15s;font-size:15px;font-weight:500;color:var(--sand)}
+.menu-item:hover{background:var(--surface2)}
+.menu-item.active{color:var(--orange)}
+.menu-item-icon{font-size:20px;width:28px;text-align:center}
+.menu-item-label{flex:1}
+.menu-item-badge{font-family:var(--font-mono);font-size:10px;color:var(--text-dim);background:var(--surface2);padding:2px 8px;border-radius:10px}
+.fab{position:fixed;bottom:20px;right:20px;width:52px;height:52px;background:var(--orange);border-radius:50%;border:none;cursor:pointer;z-index:150;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 16px rgba(224,92,0,.4);transition:transform .2s}
+.fab:active{transform:scale(.93)}
+.fab-icon{font-size:22px;color:#fff;line-height:1}
+.fab-label{position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-family:var(--font-mono);font-size:8px;color:var(--text-dim);white-space:nowrap}
+
+/* bnav-btn removed */
 .bnav-btn.active{color:var(--gold)}
-.bnav-icon{font-size:18px;display:block;margin-bottom:2px}
+/* bnav-icon removed */
 
 /* ERROR */
 .error-box{background:rgba(192,57,43,.1);border:1px solid rgba(192,57,43,.3);border-radius:10px;padding:16px 20px;font-size:13px;color:#e74c3c;line-height:1.6}
@@ -188,26 +205,49 @@ main{max-width:700px;margin:0 auto;padding:24px 16px 100px}
   <!-- Contenu dynamique -->
 </main>
 
-<nav class="bottom-nav">
-  <button class="bnav-btn active" id="bnav-lesson" onclick="showView('lesson')">
-    <span class="bnav-icon">📖</span>Leçon
-  </button>
-  <button class="bnav-btn" id="bnav-vocab" onclick="showView('vocab')">
-    <span class="bnav-icon">📚</span>Vocab
-  </button>
-  <button class="bnav-btn" id="bnav-srs" onclick="showView('srs')">
-    <span class="bnav-icon">🔁</span>Révision
-  </button>
-  <button class="bnav-btn" id="bnav-dico" onclick="showView('dico')">
-    <span class="bnav-icon">🗂️</span>Dico
-  </button>
-  <button class="bnav-btn" id="bnav-archives" onclick="showView('archives')">
-    <span class="bnav-icon">📜</span>Archives
-  </button>
-  <button class="bnav-btn" id="bnav-settings" onclick="showView('settings')">
-    <span class="bnav-icon">⚙️</span>Réglages
-  </button>
-</nav>
+<!-- FAB menu button -->
+<button class="fab" id="fab-btn" onclick="toggleMenu()">
+  <span class="fab-icon" id="fab-icon">☰</span>
+</button>
+
+<!-- Overlay -->
+<div class="menu-overlay" id="menu-overlay" onclick="closeMenu()"></div>
+
+<!-- Drawer -->
+<div class="menu-drawer" id="menu-drawer">
+  <div class="menu-handle"></div>
+  <div class="menu-item active" id="menu-lesson" onclick="selectMenu('lesson')">
+    <span class="menu-item-icon">📖</span>
+    <span class="menu-item-label">Leçon du jour</span>
+  </div>
+  <div class="menu-item" id="menu-vocab" onclick="selectMenu('vocab')">
+    <span class="menu-item-icon">📚</span>
+    <span class="menu-item-label">Vocabulaire</span>
+  </div>
+  <div class="menu-item" id="menu-srs" onclick="selectMenu('srs')">
+    <span class="menu-item-icon">🔁</span>
+    <span class="menu-item-label">Révision espacée</span>
+    <span class="menu-item-badge" id="srs-due-badge"></span>
+  </div>
+  <div class="menu-item" id="menu-dialogue" onclick="selectMenu('dialogue')">
+    <span class="menu-item-icon">💬</span>
+    <span class="menu-item-label">Dialogue libre</span>
+  </div>
+  <div class="menu-item" id="menu-dico" onclick="selectMenu('dico')">
+    <span class="menu-item-icon">🗂️</span>
+    <span class="menu-item-label">Dictionnaire</span>
+    <span class="menu-item-badge" id="dico-count-badge"></span>
+  </div>
+  <div class="menu-item" id="menu-archives" onclick="selectMenu('archives')">
+    <span class="menu-item-icon">📜</span>
+    <span class="menu-item-label">Archives</span>
+    <span class="menu-item-badge" id="archives-count-badge"></span>
+  </div>
+  <div class="menu-item" id="menu-settings" onclick="selectMenu('settings')">
+    <span class="menu-item-icon">⚙️</span>
+    <span class="menu-item-label">Réglages</span>
+  </div>
+</div>
 
 <script>
 // ============================================================
@@ -578,11 +618,38 @@ function renderError(msg){
 // ============================================================
 // VIEW ROUTER
 // ============================================================
+function toggleMenu(){
+  const drawer=document.getElementById('menu-drawer');
+  const overlay=document.getElementById('menu-overlay');
+  const icon=document.getElementById('fab-icon');
+  const isOpen=drawer.classList.contains('open');
+  drawer.classList.toggle('open',!isOpen);
+  overlay.classList.toggle('open',!isOpen);
+  icon.textContent=isOpen?'☰':'✕';
+}
+function closeMenu(){
+  document.getElementById('menu-drawer').classList.remove('open');
+  document.getElementById('menu-overlay').classList.remove('open');
+  document.getElementById('fab-icon').textContent='☰';
+}
+function selectMenu(view){ closeMenu(); showView(view); }
+function updateMenuBadges(){
+  const due=(typeof srsGetDue==='function')?srsGetDue().length:0;
+  const total=STATE.srsBank?STATE.srsBank.length:0;
+  const histLen=STATE.history?STATE.history.length:0;
+  const d=document.getElementById('srs-due-badge');
+  const di=document.getElementById('dico-count-badge');
+  const ar=document.getElementById('archives-count-badge');
+  if(d) d.textContent=due>0?due+' dues':'';
+  if(di) di.textContent=total>0?total+' mots':'';
+  if(ar) ar.textContent=histLen>0?histLen+' lecons':'';
+}
 function showView(view){
-  STATE.currentView = view;
-  ['lesson','vocab','srs','dialogue','dico','settings'].forEach(v=>{
-    document.getElementById('bnav-'+v)?.classList.toggle('active', v===view);
+  STATE.currentView=view;
+  ['lesson','vocab','srs','dialogue','dico','archives','settings'].forEach(v=>{
+    document.getElementById('menu-'+v)?.classList.toggle('active',v===view);
   });
+  updateMenuBadges();
   if(view==='lesson') renderLessonView();
   else if(view==='vocab') renderVocabView();
   else if(view==='srs') renderSRSView();
